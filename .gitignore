@@ -1,0 +1,11 @@
+.venv/
+__pycache__/
+veri/*.log
+veri/*-sonuc.json
+veri/deneme.txt
+veri/tam.txt
+veri/tr.csv
+veri/global.csv
+site/durum.json
+site/kontrol.json
+.claude/
