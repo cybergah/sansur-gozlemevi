@@ -19,6 +19,7 @@ git pull --quiet --rebase
 git add veri/durum.json veri/gunluk
 git diff --cached --quiet
 if ($LASTEXITCODE -ne 0) {
-    git commit --quiet -m "Ölçüm $(Get-Date -Format yyyy-MM-dd)"
+    # Windows PowerShell 5.1 BOM'suz dosyadaki Türkçe harfleri bozar, mesaj ASCII kalır.
+    git commit --quiet -m "Olcum $(Get-Date -Format yyyy-MM-dd)"
     git push --quiet
 }
