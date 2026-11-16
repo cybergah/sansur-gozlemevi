@@ -17,7 +17,7 @@ Türkiye'den hangi sitelerin engelli olduğunu, **nasıl** engellendiğini ve **
 
 ## Sınırlar
 
-- Ölçüm tek bir bağlantıdan yapılır. Başka operatörlerde sonuç farklı olabilir. Ölçümü yapan bağlantı ve operatör, gizlilik için yayınlanmaz.
+- Ölçüm tek bir bağlantıdan yapılır. Başka operatörlerde sonuç farklı olabilir. Ölçümü yapan bağlantı ve operatör, gizlilik için yayınlanmaz. Ölçüm bilgisayarı başka bir bağlantıdayken ölçüm yapılmaz. Bağlantının koptuğu, sitelerin çoğunun "bilinmiyor" çıktığı günler de yayınlanmaz.
 - Yalnızca ana sayfaya bakılır. Tek bir haberin ya da sayfanın engellenmesi görünmez.
 - Sayfa metnine bakılmaz. HTTPS'te sertifika doğrulandıysa gelen sayfa sitenin kendisidir. İlk denemede "5651" ya da "erişim engellenmiştir" geçen sayfaların hepsi, sitenin kendi içeriği ya da kendi yönlendirmesiydi.
 

@@ -4,6 +4,7 @@
   veri/durum.json              her sitenin şu anki durumu ve değişim geçmişi
 
 Kullanım: python isle.py ham-sonuc.json
+          python isle.py --yeniden   (durum.json'u günlük dosyalardan baştan kurar)
 """
 
 from __future__ import annotations
@@ -32,19 +33,16 @@ def ozet(o: dict) -> dict:
     return d
 
 
-def main(ham: str) -> None:
-    veri = json.load(open(ham, encoding="utf-8"))
-    gun = veri["zaman"][:10]
-    bugun = {o["site"]: ozet(o) for o in veri["olcumler"]}
+# Ölçümün yarısından çoğu "bilinmiyor" ise bağlantı o an kopuktu: o gün yayınlanmaz.
+# Yayınlansaydı engelli bütün siteler "açıldı" görünürdü.
+BOZUK_ORAN = 0.5
 
-    gunluk = KOK / "veri" / "gunluk"
-    gunluk.mkdir(parents=True, exist_ok=True)
-    json.dump({"zaman": veri["zaman"], "siteler": bugun}, open(gunluk / f"{gun}.json", "w", encoding="utf-8"),
-              ensure_ascii=False, separators=(",", ":"), sort_keys=True)
 
-    yol = KOK / "veri" / "durum.json"
-    durum = json.load(open(yol, encoding="utf-8")) if yol.exists() else {"siteler": {}}
-    kat = kategoriler()
+def bozuk(siteler: dict) -> bool:
+    return sum(d["sonuc"] == "bilinmiyor" for d in siteler.values()) > BOZUK_ORAN * len(siteler)
+
+
+def gecmise_isle(durum: dict, gun: str, zaman: str, bugun: dict, kat: dict) -> None:
     for site, d in bugun.items():
         s = durum["siteler"].setdefault(site, {"gecmis": []})
         s["kategori"] = kat.get(site, "")
@@ -55,11 +53,50 @@ def main(ham: str) -> None:
             s["gecmis"].append({"tarih": gun, "engelli": engelli, "sonuc": d["sonuc"]})
         s["son"] = d
         s["son_olcum"] = gun
-    durum["son_olcum"] = veri["zaman"]
+    durum["son_olcum"] = zaman
     durum["site_sayisi"] = len(bugun)
+
+
+def yaz_durum(durum: dict) -> None:
+    yol = KOK / "veri" / "durum.json"
     json.dump(durum, open(yol, "w", encoding="utf-8"), ensure_ascii=False, indent=1, sort_keys=True)
+
+
+def main(ham: str) -> None:
+    veri = json.load(open(ham, encoding="utf-8"))
+    gun = veri["zaman"][:10]
+    bugun = {o["site"]: ozet(o) for o in veri["olcumler"]}
+    if bozuk(bugun):
+        print(f"{gun}: ölçüm bozuk (çoğu site bilinmiyor), yayınlanmadı", file=sys.stderr)
+        sys.exit(3)
+
+    gunluk = KOK / "veri" / "gunluk"
+    gunluk.mkdir(parents=True, exist_ok=True)
+    json.dump({"zaman": veri["zaman"], "siteler": bugun}, open(gunluk / f"{gun}.json", "w", encoding="utf-8"),
+              ensure_ascii=False, separators=(",", ":"), sort_keys=True)
+
+    yol = KOK / "veri" / "durum.json"
+    durum = json.load(open(yol, encoding="utf-8")) if yol.exists() else {"siteler": {}}
+    gecmise_isle(durum, gun, veri["zaman"], bugun, kategoriler())
+    yaz_durum(durum)
     print(f"{gun}: {sum(d['sonuc'] in ENGEL for d in bugun.values())} engelli / {len(bugun)} site")
 
 
+def yeniden() -> None:
+    """durum.json'u veri/gunluk/ klasöründeki günlerden baştan kurar."""
+    durum: dict = {"siteler": {}}
+    kat = kategoriler()
+    for f in sorted((KOK / "veri" / "gunluk").glob("*.json")):
+        g = json.load(open(f, encoding="utf-8"))
+        if bozuk(g["siteler"]):
+            print(f"{f.stem}: bozuk, atlandı")
+            continue
+        gecmise_isle(durum, f.stem, g["zaman"], g["siteler"], kat)
+    yaz_durum(durum)
+
+
 if __name__ == "__main__":
-    main(sys.argv[1])
+    if sys.argv[1:] == ["--yeniden"]:
+        yeniden()
+    else:
+        main(sys.argv[1])
