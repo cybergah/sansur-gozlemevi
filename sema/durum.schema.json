@@ -1,0 +1,71 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/cybergah/sansur-gozlemevi/main/sema/durum.schema.json",
+  "title": "Her sitenin şu anki durumu ve geçmişi (veri/durum.json)",
+  "description": "isle.py her gün günceller. 'python isle.py --yeniden' bu dosyayı veri/gunluk/ klasöründen baştan kurar.",
+  "type": "object",
+  "required": ["son_olcum", "site_sayisi", "siteler"],
+  "additionalProperties": false,
+  "properties": {
+    "son_olcum": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Son yayınlanan ölçümün anı, UTC, ISO 8601."
+    },
+    "site_sayisi": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Son ölçümde denenen site sayısı."
+    },
+    "siteler": {
+      "type": "object",
+      "description": "Anahtar: site adı ya da IP adresi.",
+      "additionalProperties": { "$ref": "#/$defs/site" }
+    }
+  },
+  "$defs": {
+    "tarih": {
+      "type": "string",
+      "format": "date",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
+    },
+    "site": {
+      "type": "object",
+      "required": ["kategori", "son", "son_olcum", "gecmis"],
+      "additionalProperties": false,
+      "properties": {
+        "kategori": {
+          "type": "string",
+          "pattern": "^[A-Z]*$",
+          "description": "Citizen Lab kategori kodu, örneğin NEWS (haber), HUMR (insan hakları), POLR (siyasi eleştiri), LGBT, ANON (anonimlik araçları). Listede yoksa boş."
+        },
+        "son": {
+          "$ref": "olcum.schema.json",
+          "description": "Sitenin son ölçüldüğü günkü sonucu."
+        },
+        "son_olcum": {
+          "$ref": "#/$defs/tarih",
+          "description": "Sitenin son ölçüldüğü gün."
+        },
+        "gecmis": {
+          "type": "array",
+          "minItems": 1,
+          "description": "Yalnızca engel durumu değişince (engelli <-> açık) yeni satır eklenir. İlk satır sitenin ilk ölçüldüğü gündür. Son satır şu anki durumun ne zamandan beri sürdüğünü gösterir.",
+          "items": {
+            "type": "object",
+            "required": ["tarih", "engelli", "sonuc"],
+            "additionalProperties": false,
+            "properties": {
+              "tarih": { "$ref": "#/$defs/tarih" },
+              "engelli": {
+                "type": "boolean",
+                "description": "sonuc dns, ip_engeli ya da sni_engeli ise true."
+              },
+              "sonuc": { "$ref": "olcum.schema.json#/$defs/sonuc" }
+            }
+          }
+        }
+      }
+    }
+  }
+}

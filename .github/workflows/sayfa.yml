@@ -29,10 +29,15 @@ jobs:
         with:
           python-version: "3.13"
 
+      - name: Veri şemaya uyuyor mu
+        run: |
+          python -m pip install -q -r requirements.txt jsonschema
+          python dogrula.py
+
       - name: Karşı kontrol
         run: |
-          python -m pip install -q -r requirements.txt
           python kontrol.py veri/durum.json site/kontrol.json
+          python dogrula.py --kontrol site/kontrol.json
 
       - name: Sayfa dosyaları
         run: cp veri/durum.json site/durum.json

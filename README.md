@@ -15,6 +15,47 @@ Türkiye'den hangi sitelerin engelli olduğunu, **nasıl** engellendiğini ve **
 3. **Karşı kontrol (Türkiye dışından):** Her gönderimde GitHub Actions, engelli görünen siteleri ABD'deki bir sunucudan yeniden dener (`kontrol.py`). Orada da açılmayan site engelli sayılmaz, çünkü sorun sitenin kendisindedir.
 4. **Sayfa:** `site/index.html` dosyası GitHub Pages'te yayınlanır.
 
+## Veri biçimi
+
+Bütün veriler JSON'dur. Alanların tam tanımı [`sema/`](sema/) klasöründeki JSON Schema (2020-12) dosyalarındadır. Her gönderimde GitHub Actions verinin bu şemalara uyduğunu `dogrula.py` ile kontrol eder.
+
+| Dosya | Şema | İçerik |
+|---|---|---|
+| `veri/durum.json` | [`durum.schema.json`](sema/durum.schema.json) | Her sitenin şu anki durumu ve engel geçmişi |
+| `veri/gunluk/YYYY-MM-DD.json` | [`gunluk.schema.json`](sema/gunluk.schema.json) | Bir günün ölçüm özeti; dosya adı ölçüm günüdür (UTC) |
+| [`kontrol.json`](https://cybergah.github.io/sansur-gozlemevi/kontrol.json) (yalnız sayfada) | [`kontrol.schema.json`](sema/kontrol.schema.json) | Türkiye dışından karşı kontrol sonucu |
+
+`veri/durum.json` içinden kısaltılmış bir örnek:
+
+```json
+{
+ "son_olcum": "2026-11-14T17:19:09+00:00",
+ "site_sayisi": 2121,
+ "siteler": {
+  "anonymouse.org": {
+   "kategori": "ANON",
+   "son_olcum": "2026-11-14",
+   "son": {"sonuc": "sni_engeli", "dns": "ayni", "tcp": "tamam", "tls": "zaman_asimi"},
+   "gecmis": [{"tarih": "2026-11-14", "engelli": true, "sonuc": "sni_engeli"}]
+  }
+ }
+}
+```
+
+- **`sonuc`:** Değerler `acik`, `dns`, `ip_engeli`, `sni_engeli`, `http_hatasi` ya da `bilinmiyor` olabilir. Engel sayılanlar `dns`, `ip_engeli` ve `sni_engeli`dir. `bilinmiyor`, sitenin adının şifreli DNS'te de çözülmediğini gösterir; site kapanmış olabilir.
+- **`dns`, `tcp`, `tls`:** Yalnızca engelli sitelerde yazılır ve engelin hangi katmanda olduğunu gösterir. Örnekteki gibi DNS ve bağlantı `tamam`, şifreli bağlantı `zaman_asimi` ise engel site adına (SNI) göre konmuştur.
+- **`gecmis`:** Her gün değil, yalnızca engel durumu değişince yeni satır eklenir. Son satırın tarihi, şu anki durumun ne zamandan beri sürdüğünü gösterir.
+- **`kategori`:** Citizen Lab kategori kodudur, örneğin `NEWS`, `HUMR`, `POLR`, `LGBT`.
+
+Verilerde ölçümü yapan bağlantıyı, operatörü ya da IP adresini tanıtan hiçbir alan yoktur, olmayacak da.
+
+Kendi bilgisayarında doğrulamak için:
+
+```bash
+python -m pip install jsonschema
+python dogrula.py
+```
+
 ## Sınırlar
 
 - Ölçüm tek bir bağlantıdan yapılır. Başka operatörlerde sonuç farklı olabilir. Ölçümü yapan bağlantı ve operatör, gizlilik için yayınlanmaz. Ölçüm bilgisayarı başka bir bağlantıdayken ölçüm yapılmaz. Bağlantının koptuğu, sitelerin çoğunun "bilinmiyor" çıktığı günler de yayınlanmaz.

@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/cybergah/sansur-gozlemevi/main/sema/gunluk.schema.json",
+  "title": "Bir günün ölçümü (veri/gunluk/YYYY-MM-DD.json)",
+  "description": "Dosya adı ölçüm gününün tarihidir (UTC). Her gün bir dosya; bağlantının koptuğu ya da ev ağı dışında yapılan ölçümler yazılmaz.",
+  "type": "object",
+  "required": ["zaman", "siteler"],
+  "additionalProperties": false,
+  "properties": {
+    "zaman": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Ölçümün bittiği an, UTC, ISO 8601. Örnek: 2026-11-14T17:19:09+00:00"
+    },
+    "siteler": {
+      "type": "object",
+      "description": "Anahtar: site adı ya da IP adresi (liste.csv'deki gibi). Değer: o günkü sonuç.",
+      "minProperties": 1,
+      "additionalProperties": { "$ref": "olcum.schema.json" }
+    }
+  }
+}

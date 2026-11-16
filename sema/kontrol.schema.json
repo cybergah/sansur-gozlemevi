@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/cybergah/sansur-gozlemevi/main/sema/kontrol.schema.json",
+  "title": "Türkiye dışından karşı kontrol (sayfadaki kontrol.json)",
+  "description": "Depoda tutulmaz. Her gönderimde kontrol.py GitHub sunucusunda üretir ve sayfayla birlikte yayınlar: https://cybergah.github.io/sansur-gozlemevi/kontrol.json",
+  "type": "object",
+  "required": ["zaman", "disarida_acik"],
+  "additionalProperties": false,
+  "properties": {
+    "zaman": { "type": "string", "format": "date-time" },
+    "disarida_acik": {
+      "type": "object",
+      "description": "Yalnızca Türkiye'den engelli görünen siteler. true: dışarıdan açılıyor, yani engel Türkiye'ye özgü. false: dışarıdan da açılmıyor, sorun sitenin kendisinde; sayfada engelli sayılmaz.",
+      "additionalProperties": { "type": "boolean" }
+    }
+  }
+}

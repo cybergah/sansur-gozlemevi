@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/cybergah/sansur-gozlemevi/main/sema/olcum.schema.json",
+  "title": "Bir sitenin bir günlük ölçüm özeti",
+  "description": "veri/gunluk/*.json içindeki her site ve veri/durum.json içindeki 'son' alanı bu biçimdedir. dns, tcp ve tls yalnızca site engelli çıktığında (sonuc: dns, ip_engeli, sni_engeli) yazılır.",
+  "type": "object",
+  "required": ["sonuc"],
+  "additionalProperties": false,
+  "properties": {
+    "sonuc": { "$ref": "#/$defs/sonuc" },
+    "dns": {
+      "type": "string",
+      "description": "Operatörün DNS cevabı. 'ayni': şifreli DNS (DoH) ile aynı adres. 'farkli_adres': başka bir adres (çoğu zaman engel sayfası). Diğer değerler sistem DNS'inin hata adıdır, örneğin 'dns_yok' (ad çözülmedi) ya da 'zaman_asimi'.",
+      "examples": ["ayni", "farkli_adres", "dns_yok", "zaman_asimi"]
+    },
+    "tcp": {
+      "$ref": "#/$defs/baglanti",
+      "description": "Sitenin gerçek adresine (DoH'tan) 443. kapıdan bağlantı. 'tamam' ya da hata adı."
+    },
+    "tls": {
+      "$ref": "#/$defs/baglanti",
+      "description": "Site adıyla (SNI) şifreli bağlantı. 'tamam' ya da hata adı."
+    }
+  },
+  "$defs": {
+    "sonuc": {
+      "type": "string",
+      "description": "Tek kelimelik sonuç. Engel sayılanlar: dns, ip_engeli, sni_engeli. 'bilinmiyor': sitenin adı şifreli DNS'te de çözülmedi (site kapanmış olabilir). 'http_hatasi': bağlantı kuruldu ama sayfa gelmedi; engel sayılmaz.",
+      "enum": ["acik", "dns", "ip_engeli", "sni_engeli", "http_hatasi", "bilinmiyor"]
+    },
+    "baglanti": {
+      "type": "string",
+      "examples": ["tamam", "zaman_asimi", "reddedildi", "baglanti_sifirlandi", "sertifika", "tls_hatasi"]
+    }
+  }
+}
