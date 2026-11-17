@@ -2,7 +2,7 @@
 
 Türkiye'den hangi sitelerin engelli olduğunu, **nasıl** engellendiğini ve **ne zamandan beri** engelli olduğunu her gün ölçer. Sonuçlar herkese açık bir sayfada yayınlanır: **https://cybergah.github.io/sansur-gozlemevi/**
 
-*English: a daily, open measurement of which websites are blocked in Turkey, by which method (DNS, IP or SNI) and since when.*
+**[English below](#in-english)** · Sayfa İngilizce de okunabilir: **https://cybergah.github.io/sansur-gozlemevi/?lang=en**
 
 ## Nasıl çalışır?
 
@@ -69,6 +69,39 @@ python -m pip install -r requirements.txt
 python olc.py liste.txt sonuc.json   # her satırda bir site adı
 python isle.py sonuc.json
 ```
+
+## In English
+
+**Turkey Censorship Observatory** measures every day which websites are blocked in Turkey, **how** they are blocked and **since when**. Results are published on an open page: **https://cybergah.github.io/sansur-gozlemevi/?lang=en**
+
+**How it works**
+
+1. **Measurement, from inside Turkey:** `olc.py` tests about 2,100 sites from the [Citizen Lab test lists](https://github.com/citizenlab/test-lists) at four layers:
+   - **DNS:** the ISP resolver's answer is compared with encrypted DNS (DoH).
+   - **IP:** a TCP connection is made to the site's real address.
+   - **SNI:** a TLS handshake is made with the site name, to see whether it is cut when the name is seen.
+   - **HTTP:** whether the page loads.
+2. **Processing:** `isle.py` writes the day's results to `veri/gunluk/` and updates the history in `veri/durum.json`. The history records when each site was blocked and when it was unblocked.
+3. **Cross-check, from outside Turkey:** on every push, GitHub Actions re-tests the sites that look blocked from a server abroad (`kontrol.py`). A site that does not load there either is not counted as blocked.
+4. **Page:** `site/index.html` is published on GitHub Pages, in Turkish and English.
+
+**Data:** all files are JSON, described by JSON Schemas (2020-12) in [`sema/`](sema/) and validated on every push by `dogrula.py`. Field names are in Turkish. The main ones are:
+
+| Field | Meaning |
+|---|---|
+| `sonuc` | Result: `acik` (open), `dns`, `ip_engeli` (IP block), `sni_engeli` (SNI block), `http_hatasi` (page error, not a block), `bilinmiyor` (unknown) |
+| `gecmis` | History |
+| `engelli` | Blocked |
+| `tarih` | Date |
+| `kategori` | Citizen Lab category code |
+
+**Limits**
+
+- Measurements come from a single connection, so results may differ on other ISPs. The connection and the ISP are not published, for privacy.
+- No measurement is taken when the measuring computer is on another network. Days when the connection dropped and most sites came back unknown are not published.
+- Only the home page is checked, so blocks on single articles or pages are not visible.
+
+Code: MIT. Site list and measurement data: CC BY-NC-SA 4.0, derived from the Citizen Lab test lists.
 
 ## Lisans
 
