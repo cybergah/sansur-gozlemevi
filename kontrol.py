@@ -29,7 +29,7 @@ async def main(durum_yolu: str, cikti: str) -> None:
         "zaman": datetime.now(timezone.utc).isoformat(timespec="seconds"),
         # Dışarıdan sayfası açılan ya da en azından şifreli bağlantısı kurulan site, dünyada açık demektir.
         "disarida_acik": {
-            o["site"]: (not o["http"].get("hata")) or (o["doh"] and o["tcp"] is None and o["tls"] is None)
+            o["site"]: bool((not o["http"].get("hata")) or (o["doh"] and o["tcp"] is None and o["tls"] is None))
             for o in sonuclar
         },
     }
