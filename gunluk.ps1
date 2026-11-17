@@ -23,6 +23,14 @@ if (-not $ev -or -not $mac -or $mac -ne $ev) {
     exit 0
 }
 
+# VPN acikken modem ayni gorunur ama trafik yurt disindan cikar; engeller gorunmez.
+# Internet cikisi Turkiye'de degilse olcum yapilmaz. Ulke bilgisi yalnizca burada kullanilir.
+$ulke = try { (Invoke-RestMethod "https://ipinfo.io/country" -TimeoutSec 15).Trim() } catch { $null }
+if ($ulke -ne "TR") {
+    "$(Get-Date -Format s) internet cikisi Turkiye'de degil ($ulke), VPN acik olabilir; olcum yapilmadi" | Add-Content (Join-Path $env:TEMP "sansur-olcum.log")
+    exit 0
+}
+
 $liste = Join-Path $env:TEMP "sansur-liste.txt"
 $ham = Join-Path $env:TEMP "sansur-ham.json"
 Get-Content liste.csv -Encoding utf8 | Select-Object -Skip 1 | ForEach-Object { $_.Split(",")[0] } |

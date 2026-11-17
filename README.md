@@ -58,7 +58,7 @@ python dogrula.py
 
 ## Sınırlar
 
-- Ölçüm tek bir bağlantıdan yapılır. Başka operatörlerde sonuç farklı olabilir. Ölçümü yapan bağlantı ve operatör, gizlilik için yayınlanmaz. Ölçüm bilgisayarı başka bir bağlantıdayken ölçüm yapılmaz. Bağlantının koptuğu, sitelerin çoğunun "bilinmiyor" çıktığı günler de yayınlanmaz.
+- Ölçüm tek bir bağlantıdan yapılır. Başka operatörlerde sonuç farklı olabilir. Ölçümü yapan bağlantı ve operatör, gizlilik için yayınlanmaz. Ölçüm bilgisayarı başka bir bağlantıdayken ya da internet çıkışı Türkiye dışındayken (örneğin VPN açıkken) ölçüm yapılmaz. Bağlantının koptuğu, sitelerin çoğunun "bilinmiyor" çıktığı günler de yayınlanmaz.
 - Yalnızca ana sayfaya bakılır. Tek bir haberin ya da sayfanın engellenmesi görünmez.
 - Sayfa metnine bakılmaz. HTTPS'te sertifika doğrulandıysa gelen sayfa sitenin kendisidir. İlk denemede "5651" ya da "erişim engellenmiştir" geçen sayfaların hepsi, sitenin kendi içeriği ya da kendi yönlendirmesiydi.
 
@@ -98,7 +98,7 @@ python isle.py sonuc.json
 **Limits**
 
 - Measurements come from a single connection, so results may differ on other ISPs. The connection and the ISP are not published, for privacy.
-- No measurement is taken when the measuring computer is on another network. Days when the connection dropped and most sites came back unknown are not published.
+- No measurement is taken when the measuring computer is on another network or its traffic leaves Turkey (for example through a VPN). Days when the connection dropped and most sites came back unknown are not published.
 - Only the home page is checked, so blocks on single articles or pages are not visible.
 
 Code: MIT. Site list and measurement data: CC BY-NC-SA 4.0, derived from the Citizen Lab test lists.
