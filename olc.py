@@ -1,4 +1,5 @@
-"""Sansür gözlemevi: bir site listesini bu bağlantıdan ölçer.
+"""Bir site listesini bu bağlantıdan ölçer. kontrol.py, olası engelleri Türkiye dışından
+denemek için bunu kullanır.
 
 Her site için dört katman denenir:
   dns  - sistemin (operatörün) verdiği adres ile şifreli DNS (DoH) adresi aynı mı

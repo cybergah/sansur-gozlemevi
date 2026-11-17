@@ -15,7 +15,7 @@ from jsonschema import Draft202012Validator
 from referencing import Registry, Resource
 
 KOK = Path(__file__).parent
-ENGEL = {"dns", "sni_engeli", "ip_engeli"}
+from isle import ENGEL
 
 
 def yukle(yol: Path):

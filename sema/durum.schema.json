@@ -2,25 +2,87 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://raw.githubusercontent.com/cybergah/sansur-gozlemevi/main/sema/durum.schema.json",
   "title": "Her sitenin şu anki durumu ve geçmişi (veri/durum.json)",
-  "description": "isle.py her gün günceller. 'python isle.py --yeniden' bu dosyayı veri/gunluk/ klasöründen baştan kurar.",
+  "description": "ooni.py her gün günceller. 'python isle.py --yeniden' bu dosyayı veri/gunluk/ klasöründen baştan kurar.",
   "type": "object",
-  "required": ["son_olcum", "site_sayisi", "siteler"],
+  "required": [
+    "son_olcum",
+    "site_sayisi",
+    "siteler",
+    "kaynak",
+    "pencere",
+    "operatorler"
+  ],
   "additionalProperties": false,
   "properties": {
     "son_olcum": {
       "type": "string",
       "format": "date-time",
-      "description": "Son yayınlanan ölçümün anı, UTC, ISO 8601."
+      "description": "Son güncellemenin anı, UTC, ISO 8601."
     },
     "site_sayisi": {
       "type": "integer",
       "minimum": 0,
-      "description": "Son ölçümde denenen site sayısı."
+      "description": "Listedeki site sayısı."
     },
     "siteler": {
       "type": "object",
       "description": "Anahtar: site adı ya da IP adresi.",
-      "additionalProperties": { "$ref": "#/$defs/site" }
+      "additionalProperties": {
+        "$ref": "#/$defs/site"
+      }
+    },
+    "kaynak": {
+      "const": "OONI",
+      "description": "Ölçümler OONI gönüllülerinindir (ooni.org, CC BY-NC-SA 4.0)."
+    },
+    "pencere": {
+      "type": "object",
+      "required": [
+        "baslangic",
+        "bitis"
+      ],
+      "additionalProperties": false,
+      "description": "Sonucun dayandığı ölçüm günleri (UTC, ikisi de dahil).",
+      "properties": {
+        "baslangic": {
+          "type": "string",
+          "format": "date"
+        },
+        "bitis": {
+          "type": "string",
+          "format": "date"
+        }
+      }
+    },
+    "operatorler": {
+      "type": "object",
+      "description": "Operatör özeti, son 7 gün. Yalnızca ev ve mobil internet operatörleri sayılır.",
+      "additionalProperties": {
+        "type": "object",
+        "required": [
+          "olcum",
+          "site",
+          "engelli"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "olcum": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "OONI ölçüm sayısı"
+          },
+          "site": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Hakkında karar verilebilen site sayısı"
+          },
+          "engelli": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Bu operatörde engelli çıkan site sayısı"
+          }
+        }
+      }
     }
   },
   "$defs": {
@@ -31,7 +93,12 @@
     },
     "site": {
       "type": "object",
-      "required": ["kategori", "son", "son_olcum", "gecmis"],
+      "required": [
+        "kategori",
+        "son",
+        "son_olcum",
+        "gecmis"
+      ],
       "additionalProperties": false,
       "properties": {
         "kategori": {
@@ -50,18 +117,26 @@
         "gecmis": {
           "type": "array",
           "minItems": 1,
-          "description": "Yalnızca engel durumu değişince (engelli <-> açık) yeni satır eklenir. İlk satır sitenin ilk ölçüldüğü gündür. Son satır şu anki durumun ne zamandan beri sürdüğünü gösterir.",
+          "description": "Yalnızca engel durumu değişince (engelli <-> açık) yeni satır eklenir. Verinin gelmediği günler durumu değiştirmez. İlk satır sitenin ilk değerlendirildiği gündür.",
           "items": {
             "type": "object",
-            "required": ["tarih", "engelli", "sonuc"],
+            "required": [
+              "tarih",
+              "engelli",
+              "sonuc"
+            ],
             "additionalProperties": false,
             "properties": {
-              "tarih": { "$ref": "#/$defs/tarih" },
+              "tarih": {
+                "$ref": "#/$defs/tarih"
+              },
               "engelli": {
                 "type": "boolean",
-                "description": "sonuc dns, ip_engeli ya da sni_engeli ise true."
+                "description": "sonuc engel sayılan bir değerse true."
               },
-              "sonuc": { "$ref": "olcum.schema.json#/$defs/sonuc" }
+              "sonuc": {
+                "$ref": "olcum.schema.json#/$defs/sonuc"
+              }
             }
           }
         }

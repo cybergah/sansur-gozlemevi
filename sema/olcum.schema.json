@@ -1,36 +1,60 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://raw.githubusercontent.com/cybergah/sansur-gozlemevi/main/sema/olcum.schema.json",
-  "title": "Bir sitenin bir günlük ölçüm özeti",
-  "description": "veri/gunluk/*.json içindeki her site ve veri/durum.json içindeki 'son' alanı bu biçimdedir. dns, tcp ve tls yalnızca site engelli çıktığında (sonuc: dns, ip_engeli, sni_engeli) yazılır.",
+  "title": "Bir sitenin bir günlük sonucu",
+  "description": "veri/gunluk/*.json içindeki her site ve veri/durum.json içindeki 'son' alanı bu biçimdedir. Sonuç, OONI'nin Türkiye'den son 7 günde yaptığı ölçümlerden çıkarılır.",
   "type": "object",
-  "required": ["sonuc"],
+  "required": [
+    "sonuc"
+  ],
   "additionalProperties": false,
   "properties": {
-    "sonuc": { "$ref": "#/$defs/sonuc" },
-    "dns": {
-      "type": "string",
-      "description": "Operatörün DNS cevabı. 'ayni': şifreli DNS (DoH) ile aynı adres. 'farkli_adres': başka bir adres (çoğu zaman engel sayfası). Diğer değerler sistem DNS'inin hata adıdır, örneğin 'dns_yok' (ad çözülmedi) ya da 'zaman_asimi'.",
-      "examples": ["ayni", "farkli_adres", "dns_yok", "zaman_asimi"]
+    "sonuc": {
+      "$ref": "#/$defs/sonuc"
     },
-    "tcp": {
-      "$ref": "#/$defs/baglanti",
-      "description": "Sitenin gerçek adresine (DoH'tan) 443. kapıdan bağlantı. 'tamam' ya da hata adı."
+    "kesin": {
+      "const": true,
+      "description": "OONI en az bir ölçümde Türkiye'nin engel sayfasını (parmak izi) gördü. Yoksa alan yazılmaz; engel 'olası' sayılır ve Türkiye dışından ayrıca denenir."
     },
-    "tls": {
-      "$ref": "#/$defs/baglanti",
-      "description": "Site adıyla (SNI) şifreli bağlantı. 'tamam' ya da hata adı."
+    "operatorler": {
+      "type": "object",
+      "description": "Yalnızca engelli sitelerde yazılır. Anahtar: operatör adı. Engel bir operatörde olup diğerinde olmayabilir.",
+      "additionalProperties": {
+        "type": "object",
+        "required": [
+          "sonuc",
+          "olcum"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "sonuc": {
+            "$ref": "#/$defs/sonuc"
+          },
+          "olcum": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Bu operatörden 7 günde yapılan ölçüm sayısı."
+          },
+          "kesin": {
+            "const": true
+          }
+        }
+      }
     }
   },
   "$defs": {
     "sonuc": {
       "type": "string",
-      "description": "Tek kelimelik sonuç. Engel sayılanlar: dns, ip_engeli, sni_engeli. 'bilinmiyor': sitenin adı şifreli DNS'te de çözülmedi (site kapanmış olabilir). 'http_hatasi': bağlantı kuruldu ama sayfa gelmedi; engel sayılmaz.",
-      "enum": ["acik", "dns", "ip_engeli", "sni_engeli", "http_hatasi", "bilinmiyor"]
-    },
-    "baglanti": {
-      "type": "string",
-      "examples": ["tamam", "zaman_asimi", "reddedildi", "baglanti_sifirlandi", "sertifika", "tls_hatasi"]
+      "description": "Tek kelimelik sonuç. Engel sayılanlar: dns (operatör DNS'i yanlış adres ya da engel sayfası veriyor), ip_engeli (sitenin adresine bağlanılamıyor), baglanti_kesildi (bağlantı kuruluyor ama istek kesiliyor; çoğunlukla site adına (SNI) göre), sayfa_degistirildi (sayfa yerine engel sayfası geliyor), engelli (engel var, yöntemi belirlenemedi). Engel sayılmayanlar: acik, bilinmiyor (yeterli ölçüm yok).",
+      "enum": [
+        "acik",
+        "dns",
+        "ip_engeli",
+        "baglanti_kesildi",
+        "sayfa_degistirildi",
+        "engelli",
+        "bilinmiyor"
+      ]
     }
   }
 }

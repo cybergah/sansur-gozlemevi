@@ -4,10 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Türkiye Sansür Gözlemevi</title>
-<meta name="description" content="Türkiye'den hangi sitelerin, nasıl ve ne zamandan beri engellendiğini her gün ölçen açık kaynak gözlemevi. / A daily, open measurement of which websites are blocked in Turkey, how and since when.">
+<meta name="description" content="Türkiye'de hangi sitelerin, hangi operatörde, nasıl ve ne zamandan beri engellendiğini her gün OONI'nin açık ölçümlerinden çıkaran gözlemevi. / Which websites are blocked in Turkey, on which ISP, how and since when, updated daily from OONI's open measurements.">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Turkey Censorship Observatory · Türkiye Sansür Gözlemevi">
-<meta property="og:description" content="Which websites are blocked in Turkey, how (DNS, IP or SNI) and since when. Measured every day, cross-checked from abroad, open data.">
+<meta property="og:description" content="Which websites are blocked in Turkey, on which ISP, how (DNS, IP or SNI) and since when. Updated daily from thousands of OONI measurements. Open data.">
 <meta property="og:url" content="https://cybergah.github.io/sansur-gozlemevi/">
 <link rel="alternate" hreflang="tr" href="https://cybergah.github.io/sansur-gozlemevi/?lang=tr">
 <link rel="alternate" hreflang="en" href="https://cybergah.github.io/sansur-gozlemevi/?lang=en">
@@ -42,10 +42,13 @@
   .tools { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
   input, select { font: inherit; color: var(--fg); background: var(--card); border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; }
   input { flex: 1 1 220px; }
+  select { flex: 0 1 auto; max-width: 100%; }
   .tablewrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 10px; background: var(--card); }
   table { width: 100%; border-collapse: collapse; font-size: 15px; }
   th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--line); white-space: nowrap; }
   th { font-size: 13px; color: var(--muted); font-weight: 600; }
+  td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+  td.ops { white-space: normal; min-width: 180px; color: var(--muted); font-size: 14px; }
   tr:last-child td { border-bottom: 0; }
   td.site { font-family: ui-monospace, SFMono-Regular, Consolas, monospace; font-size: 14px; }
   .tag { display: inline-block; font-size: 12px; font-weight: 600; padding: 2px 8px; border-radius: 99px; }
@@ -53,6 +56,8 @@
   .t-sni, .t-ip { color: var(--amber); background: var(--amber-bg); }
   .t-open { color: var(--green); background: var(--green-bg); }
   .t-unk { color: var(--muted); background: var(--line); }
+  .olasi { margin-left: 6px; font-size: 12px; color: var(--muted); }
+  .bar { display: inline-block; height: 8px; border-radius: 4px; background: var(--red); vertical-align: middle; margin-right: 8px; }
   .empty { padding: 24px; color: var(--muted); text-align: center; }
   dl { display: grid; grid-template-columns: max-content 1fr; gap: 8px 16px; margin: 0; }
   dt { font-weight: 600; }
@@ -69,47 +74,57 @@
 <body>
 <main>
   <div class="top"><h1 data-i18n="baslik">Türkiye Sansür Gözlemevi</h1><div class="lang" role="group" aria-label="Dil / Language"><button type="button" data-lang="tr">TR</button><button type="button" data-lang="en">EN</button></div></div>
-  <p class="lead" data-i18n="giris">Türkiye'den hangi siteler engelli, nasıl engelleniyor ve ne zamandan beri? Her gün yaklaşık iki bin siteyi ölçüyoruz. Veriler ve kod açık.</p>
+  <p class="lead" data-i18n="giris">Türkiye'de hangi siteler engelli, hangi operatörde, nasıl ve ne zamandan beri? Binlerce gönüllünün OONI ile yaptığı ölçümlerden her gün çıkarıyoruz. Veriler ve kod açık.</p>
   <p class="meta" id="meta" data-i18n="yukleniyor">Yükleniyor…</p>
 
   <div class="stats">
-    <div class="stat"><b id="s-olculen">–</b><span data-i18n="olculen">ölçülen site</span></div>
-    <div class="stat"><b id="s-engelli">–</b><span data-i18n="engelli">engelli (doğrulanmış)</span></div>
+    <div class="stat"><b id="s-olculen">–</b><span data-i18n="olculen">değerlendirilen site</span></div>
+    <div class="stat"><b id="s-engelli">–</b><span data-i18n="engelli">engelli site</span></div>
     <div class="stat"><b id="s-dns">–</b><span data-i18n="dnsengel">DNS ile engel</span></div>
-    <div class="stat"><b id="s-diger">–</b><span data-i18n="baglantiengel">bağlantı düzeyinde engel</span></div>
+    <div class="stat"><b id="s-olcum">–</b><span data-i18n="olcumsay">ölçüm (son 7 gün)</span></div>
   </div>
 
   <h2 data-i18n="sondegisiklik">Son değişiklikler</h2>
   <ul class="changes" id="changes"></ul>
 
+  <h2 data-i18n="operatorbaslik">Operatöre göre</h2>
+  <p class="meta" data-i18n="operatoraciklama" style="margin-top:0">Aynı site bir operatörde engelli, diğerinde açık olabilir. Yalnızca ev ve mobil internet operatörlerinin ölçümleri sayılır.</p>
+  <div class="tablewrap">
+    <table>
+      <thead><tr><th data-i18n="th_op">Operatör</th><th class="num" data-i18n="th_olcum">Ölçüm</th><th class="num" data-i18n="th_deg">Değerlendirilen site</th><th data-i18n="th_eng">Engelli site</th></tr></thead>
+      <tbody id="ops"></tbody>
+    </table>
+  </div>
+
   <h2 data-i18n="engellisiteler">Engelli siteler</h2>
   <div class="tools">
     <input id="q" type="search" data-i18n-ph="ara" placeholder="Site ara…" aria-label="Site ara">
     <select id="cat" aria-label="Kategori"><option value="" data-i18n="tumkat">Tüm kategoriler</option></select>
+    <select id="op" aria-label="Operatör"><option value="" data-i18n="tumop">Tüm operatörler</option></select>
   </div>
   <div class="tablewrap">
     <table>
-      <thead><tr><th data-i18n="th_site">Site</th><th data-i18n="th_kat">Kategori</th><th data-i18n="th_yontem">Yöntem</th><th data-i18n="th_ilk">İlk tespit</th></tr></thead>
+      <thead><tr><th data-i18n="th_site">Site</th><th data-i18n="th_kat">Kategori</th><th data-i18n="th_yontem">Yöntem</th><th data-i18n="th_engop">Engelleyen operatörler</th><th data-i18n="th_ilk">İlk tespit</th></tr></thead>
       <tbody id="rows"></tbody>
     </table>
   </div>
   <p class="meta" id="unconfirmed"></p>
 
-  <h2 data-i18n="nasil">Nasıl ölçüyoruz?</h2>
-  <p data-i18n="dortkatman">Her site dört katmanda denenir. Hangi katmanda takıldığı, engelin yöntemini gösterir.</p>
+  <h2 data-i18n="nasil">Nasıl çalışıyor?</h2>
+  <p data-i18n-html="kaynak_metni">Ölçümler bizim değil, <a href="https://ooni.org">OONI</a> gönüllülerinin. Türkiye'de pek çok kişi OONI Probe uygulamasıyla siteleri kendi internetinden dener; sonuçlar herkese açık yayınlanır. Gözlemevi her gün son 7 günün ölçümlerini toplar ve <a href="https://github.com/citizenlab/test-lists">Citizen Lab listesindeki</a> yaklaşık 2.100 site için operatör operatör sonuç çıkarır.</p>
   <dl>
-    <dt>DNS</dt><dd data-i18n="d_dns">Site adının adresi sorulur. Operatör "yok" ya da "reddedildi" diyor ama şifreli DNS (DoH) gerçek adresi veriyorsa, engel DNS'tedir.</dd>
-    <dt data-i18n="t_ip">Bağlantı (IP)</dt><dd data-i18n="d_ip">Sitenin gerçek adresine bağlanılır. Bağlantı hiç kurulamıyorsa adresin kendisi engellenmiştir.</dd>
-    <dt data-i18n="t_sni">Site adı (SNI)</dt><dd data-i18n="d_sni">Şifreli bağlantı açılırken site adı görülür görülmez bağlantı kesiliyorsa, engel site adına göre yapılmıştır.</dd>
-    <dt data-i18n="t_sayfa">Sayfa</dt><dd data-i18n="d_sayfa">Sayfanın açılıp açılmadığına bakılır.</dd>
+    <dt>DNS</dt><dd data-i18n="d_dns">Operatörün DNS'i sitenin gerçek adresi yerine engel sayfasının adresini ya da yanlış bir adres veriyor.</dd>
+    <dt data-i18n="t_ip">IP adresi</dt><dd data-i18n="d_ip">Sitenin gerçek adresine hiç bağlanılamıyor.</dd>
+    <dt data-i18n="t_kesik">Bağlantı kesiliyor</dt><dd data-i18n="d_kesik">Bağlantı kuruluyor ama istek yolda kesiliyor. Türkiye'de bu çoğunlukla site adına (SNI) bakılarak yapılır.</dd>
+    <dt data-i18n="t_sayfa">Sayfa değiştiriliyor</dt><dd data-i18n="d_sayfa">Sitenin sayfası yerine engel sayfası geliyor.</dd>
   </dl>
-  <p style="margin-top:16px" data-i18n="karsikontrol">Yanlış alarmları elemek için Türkiye'den engelli görünen her site, Türkiye dışındaki bir sunucudan ayrıca denenir. Orada da açılmayan site engelli sayılmaz, çünkü sorun sitenin kendisindedir.</p>
-  <p data-i18n="sinirlar">Sınırlar: Ölçüm tek bir bağlantıdan yapılır. Başka operatörlerde sonuç farklı olabilir. Tek bir sayfanın ya da haberin engellenmesi, yalnızca ana sayfaya baktığımız için görünmez.</p>
+  <p style="margin-top:16px" data-i18n="karar">Bir operatörde engel kararı için o operatörden en az 5 başarılı ölçümün çoğunda (%60) sorun çıkması gerekir. OONI, Türkiye'nin engel sayfasını ölçümde görürse tek ölçüm de yeter; bunlar "doğrulanmış" engeldir. Doğrulanmamış olası engeller ayrıca Türkiye dışındaki bir sunucudan denenir; orada da açılmayan site engelli sayılmaz.</p>
+  <p data-i18n="sinirlar">Sınırlar: Ölçümler gönüllülerden geldiği için her site her gün her operatörde ölçülmeyebilir. Küçük operatörlerde veri azdır. Yalnızca ana sayfaya bakılır; tek bir haberin ya da sayfanın engellenmesi görünmez.</p>
 
   <h2 data-i18n="veriler">Veriler</h2>
-  <p data-i18n-html="veri_metni">Günlük ham sonuçlar, durum dosyası ve ölçüm kodu <a href="https://github.com/cybergah/sansur-gozlemevi">GitHub'da</a>. Site listesi <a href="https://github.com/citizenlab/test-lists">Citizen Lab test listelerinden</a> alınmıştır (CC BY-NC-SA 4.0).</p>
+  <p data-i18n-html="veri_metni">Günlük sonuçlar, durum dosyası, JSON şemaları ve kod <a href="https://github.com/cybergah/sansur-gozlemevi">GitHub'da</a>. Ölçüm verisi <a href="https://ooni.org/data/">OONI</a>'nindir, site listesi <a href="https://github.com/citizenlab/test-lists">Citizen Lab</a>'den alınmıştır; ikisi de CC BY-NC-SA 4.0 lisanslıdır.</p>
 
-  <footer data-i18n-html="altbilgi">Bir <a href="https://github.com/cybergah">Cybergah</a> projesi. Ölçümü yapan bağlantı ve operatör yayınlanmaz.</footer>
+  <footer data-i18n-html="altbilgi">Bir <a href="https://github.com/cybergah">Cybergah</a> projesi. Ölçümler için <a href="https://ooni.org">OONI</a> gönüllülerine teşekkürler.</footer>
 </main>
 <script>
 // Dil: ?lang=tr|en, yoksa son seçim, yoksa tarayıcı dili (Türkçe değilse İngilizce).
@@ -126,49 +141,57 @@ const LOC = DIL === "tr" ? "tr-TR" : "en-GB";
 // Sabit metinlerin İngilizcesi. Türkçesi sayfanın kendisinde.
 const EN = {
   baslik: "Turkey Censorship Observatory",
-  giris: "Which websites are blocked in Turkey, how are they blocked, and since when? We measure about two thousand sites every day. The data and the code are open.",
+  giris: "Which websites are blocked in Turkey, on which ISP, how, and since when? We work it out every day from measurements thousands of volunteers make with OONI. The data and the code are open.",
   yukleniyor: "Loading…",
-  olculen: "sites measured",
-  engelli: "blocked (verified)",
+  olculen: "sites assessed",
+  engelli: "blocked sites",
   dnsengel: "blocked via DNS",
-  baglantiengel: "blocked at connection level",
+  olcumsay: "measurements (last 7 days)",
   sondegisiklik: "Recent changes",
+  operatorbaslik: "By ISP",
+  operatoraciklama: "The same site can be blocked on one ISP and open on another. Only home and mobile ISPs are counted.",
+  th_op: "ISP", th_olcum: "Measurements", th_deg: "Sites assessed", th_eng: "Blocked sites",
   engellisiteler: "Blocked sites",
   ara: "Search sites…",
   tumkat: "All categories",
-  th_site: "Site", th_kat: "Category", th_yontem: "Method", th_ilk: "First seen",
-  nasil: "How we measure",
-  dortkatman: "Each site is tested at four layers. The layer where it fails shows how it is blocked.",
-  d_dns: "We ask for the site's address. If the ISP's resolver says it does not exist or refuses, while encrypted DNS (DoH) returns the real address, the block is in DNS.",
-  t_ip: "Connection (IP)",
-  d_ip: "We connect to the site's real address. If no connection can be made at all, the address itself is blocked.",
-  t_sni: "Site name (SNI)",
-  d_sni: "If the encrypted connection is cut as soon as the site name is seen during the handshake, the block is based on the site name.",
-  t_sayfa: "Page",
-  d_sayfa: "We check whether the page loads.",
-  karsikontrol: "To rule out false alarms, every site that looks blocked from Turkey is also tested from a server outside Turkey. A site that does not load there either is not counted as blocked, because the problem is with the site itself.",
-  sinirlar: "Limits: measurements come from a single connection, so results may differ on other ISPs. Because we only check the home page, a block on a single article or page is not visible.",
+  tumop: "All ISPs",
+  th_site: "Site", th_kat: "Category", th_yontem: "Method", th_engop: "Blocked on", th_ilk: "First seen",
+  nasil: "How it works",
+  kaynak_metni: 'The measurements are not ours but come from <a href="https://ooni.org">OONI</a> volunteers. Many people in Turkey test websites from their own connection with the OONI Probe app, and the results are published openly. Every day the observatory collects the last 7 days of measurements and works out a result, ISP by ISP, for about 2,100 sites from the <a href="https://github.com/citizenlab/test-lists">Citizen Lab list</a>.',
+  d_dns: "The ISP's DNS returns the address of a block page, or a wrong address, instead of the site's real address.",
+  t_ip: "IP address",
+  d_ip: "No connection can be made to the site's real address.",
+  t_kesik: "Connection cut",
+  d_kesik: "The connection is made but the request is cut on the way. In Turkey this is usually done by looking at the site name (SNI).",
+  t_sayfa: "Page replaced",
+  d_sayfa: "A block page is served instead of the site's page.",
+  karar: "To call a site blocked on an ISP, most (60%) of at least 5 successful measurements from that ISP must show a problem. If OONI sees Turkey's block page in a measurement, one measurement is enough; these are \"verified\" blocks. Unverified, possible blocks are also tested from a server outside Turkey; a site that does not load there either is not counted as blocked.",
+  sinirlar: "Limits: because measurements come from volunteers, not every site is measured on every ISP every day. Small ISPs have little data. Only the home page is checked, so a block on a single article or page is not visible.",
   veriler: "Data",
-  veri_metni: 'Daily results, the status file, JSON schemas and the measurement code are <a href="https://github.com/cybergah/sansur-gozlemevi">on GitHub</a>. The site list comes from the <a href="https://github.com/citizenlab/test-lists">Citizen Lab test lists</a> (CC BY-NC-SA 4.0).',
-  altbilgi: 'A <a href="https://github.com/cybergah">Cybergah</a> project. The connection and ISP used for measurement are not published.',
+  veri_metni: 'Daily results, the status file, JSON schemas and the code are <a href="https://github.com/cybergah/sansur-gozlemevi">on GitHub</a>. Measurement data comes from <a href="https://ooni.org/data/">OONI</a> and the site list from <a href="https://github.com/citizenlab/test-lists">Citizen Lab</a>; both are licensed CC BY-NC-SA 4.0.',
+  altbilgi: 'A <a href="https://github.com/cybergah">Cybergah</a> project. Thanks to the <a href="https://ooni.org">OONI</a> volunteers for the measurements.',
 };
 
 // Sayfanın çalışırken ürettiği metinler.
 const M = {
   tr: {
-    son: "Son ölçüm: ",
-    dogrulanamadi: n => n + " site Türkiye'den açılmadı ama dışarıdan da doğrulanamadı; listede gösterilmiyor.",
-    yok: t => "Henüz değişiklik yok. Ölçümler " + t + " tarihinde başladı.",
+    guncelleme: (z, a, b) => "Son güncelleme: " + z + " · Ölçümler: " + a + " – " + b + " (OONI)",
+    dogrulanamadi: n => n + " olası engel Türkiye dışından da açılmadığı için gösterilmiyor (sorun sitenin kendisinde olabilir).",
+    olasi: "olası",
+    olasiAciklama: n => n ? n + " site 'olası' işaretli: engel sayfası görülmedi ama Türkiye'den ölçümlerin çoğunda açılmadı, dışarıdan açıldı." : "",
+    yok: t => "Henüz değişiklik yok. Gözlemevi " + t + " tarihinde OONI verisiyle çalışmaya başladı.",
     engellendi: "engellendi", acildi: "açıldı",
-    ilkten: "ilk ölçümden beri", eslesme: "Eşleşen site yok.",
+    ilkten: "takip başlamadan önce", eslesme: "Eşleşen site yok.",
     hata: "Veri yüklenemedi: ",
   },
   en: {
-    son: "Last measurement: ",
-    dogrulanamadi: n => n + " more sites did not load from Turkey but could not be confirmed from abroad either, so they are not listed.",
-    yok: t => "No changes yet. Measurements started on " + t + ".",
+    guncelleme: (z, a, b) => "Last update: " + z + " · Measurements: " + a + " – " + b + " (OONI)",
+    dogrulanamadi: n => n + " possible blocks are not shown because those sites did not load from outside Turkey either (the problem may be the site itself).",
+    olasi: "possible",
+    olasiAciklama: n => n ? n + " sites are marked 'possible': no block page was seen, but they failed in most measurements from Turkey while loading from abroad." : "",
+    yok: t => "No changes yet. The observatory started using OONI data on " + t + ".",
     engellendi: "blocked", acildi: "unblocked",
-    ilkten: "since first measurement", eslesme: "No matching sites.",
+    ilkten: "before tracking began", eslesme: "No matching sites.",
     hata: "Could not load data: ",
   },
 }[DIL];
@@ -177,9 +200,10 @@ const KAT_TR = {NEWS:"Haber",POLR:"Siyasi eleştiri",HUMR:"İnsan hakları",CULT
 const KAT_EN = {NEWS:"News",POLR:"Political criticism",HUMR:"Human rights",CULTR:"Culture",LGBT:"LGBTQ+",REL:"Religion",ECON:"Economics",GMB:"Gambling",MILX:"Armed groups",GOVT:"Government",DATE:"Dating",COMM:"E-commerce",PORN:"Adult",MMED:"Media sharing",GRP:"Social networking",ANON:"Privacy and anonymity",HOST:"Hosting and blogging",SRCH:"Search engines",COMT:"Communication tools",FILE:"File sharing",HACK:"Computer security",XED:"Sex education",HATE:"Hate speech",PROV:"Provocative content",PUBH:"Public health",GAME:"Gaming",ALDR:"Alcohol and drugs",ENV:"Environment",FEXP:"Freedom of expression",IGO:"Intergovernmental orgs",MISC:"Other",CTRL:"Control",EK:"Other"};
 const KAT = DIL === "tr" ? KAT_TR : KAT_EN;
 const YONTEM = DIL === "tr"
-  ? {dns:["DNS","t-dns"], sni_engeli:["Site adı (SNI)","t-sni"], ip_engeli:["IP adresi","t-ip"]}
-  : {dns:["DNS","t-dns"], sni_engeli:["Site name (SNI)","t-sni"], ip_engeli:["IP address","t-ip"]};
+  ? {dns:["DNS","t-dns"], ip_engeli:["IP adresi","t-ip"], baglanti_kesildi:["Bağlantı kesiliyor","t-sni"], sayfa_degistirildi:["Sayfa değiştiriliyor","t-dns"], engelli:["Belirsiz","t-unk"]}
+  : {dns:["DNS","t-dns"], ip_engeli:["IP address","t-ip"], baglanti_kesildi:["Connection cut","t-sni"], sayfa_degistirildi:["Page replaced","t-dns"], engelli:["Unclear","t-unk"]};
 const fmt = d => new Date(d + "T00:00:00Z").toLocaleDateString(LOC, {day:"numeric", month:"long", year:"numeric", timeZone:"UTC"});
+const sayi = n => n.toLocaleString(LOC);
 const el = (t, a = {}, ...c) => { const e = document.createElement(t); Object.assign(e, a); e.append(...c); return e; };
 
 function diliUygula() {
@@ -205,48 +229,68 @@ async function yukle() {
   ]);
   const acik = kontrol.disarida_acik || {};
   const hepsi = Object.entries(durum.siteler);
-  const engelli = hepsi.filter(([s, d]) => YONTEM[d.son.sonuc] && acik[s] === true);
-  const dogrulanamadi = hepsi.filter(([s, d]) => YONTEM[d.son.sonuc] && acik[s] !== true);
+  // Doğrulanmış (engel sayfası görülmüş) engeller her zaman; olası engeller dışarıdan açıldıysa gösterilir.
+  const gosterilir = (s, d) => YONTEM[d.son.sonuc] && (d.son.kesin || acik[s] === true);
+  const engelli = hepsi.filter(([s, d]) => gosterilir(s, d));
+  const elenen = hepsi.filter(([s, d]) => YONTEM[d.son.sonuc] && !d.son.kesin && acik[s] !== true);
+  const ops = Object.entries(durum.operatorler || {}).sort((a, b) => b[1].olcum - a[1].olcum);
 
-  document.getElementById("meta").textContent =
-    M.son + new Date(durum.son_olcum).toLocaleString(LOC, {dateStyle: "long", timeStyle: "short"});
-  document.getElementById("s-olculen").textContent = durum.site_sayisi.toLocaleString(LOC);
-  document.getElementById("s-engelli").textContent = engelli.length;
-  document.getElementById("s-dns").textContent = engelli.filter(([, d]) => d.son.sonuc === "dns").length;
-  document.getElementById("s-diger").textContent = engelli.filter(([, d]) => d.son.sonuc !== "dns").length;
-  if (dogrulanamadi.length) document.getElementById("unconfirmed").textContent = M.dogrulanamadi(dogrulanamadi.length);
+  document.getElementById("meta").textContent = M.guncelleme(
+    new Date(durum.son_olcum).toLocaleString(LOC, {dateStyle: "long", timeStyle: "short"}),
+    fmt(durum.pencere.baslangic), fmt(durum.pencere.bitis));
+  document.getElementById("s-olculen").textContent = sayi(hepsi.filter(([, d]) => d.son.sonuc !== "bilinmiyor").length);
+  document.getElementById("s-engelli").textContent = sayi(engelli.length);
+  document.getElementById("s-dns").textContent = sayi(engelli.filter(([, d]) => d.son.sonuc === "dns").length);
+  document.getElementById("s-olcum").textContent = sayi(ops.reduce((t, [, o]) => t + o.olcum, 0));
+  const olasiSay = engelli.filter(([, d]) => !d.son.kesin).length;
+  document.getElementById("unconfirmed").textContent =
+    [M.olasiAciklama(olasiSay), elenen.length ? M.dogrulanamadi(elenen.length) : ""].filter(Boolean).join(" ");
 
-  // Son değişiklikler: ilk ölçüm gününden sonraki engel ve kaldırılma olayları
+  // Operatör tablosu: bir operatörde engelli sayısı, gösterilen engellerden sayılır.
+  const opEngel = {};
+  for (const [, d] of engelli) for (const [op, x] of Object.entries(d.son.operatorler || {}))
+    if (YONTEM[x.sonuc]) opEngel[op] = (opEngel[op] || 0) + 1;
+  const enCok = Math.max(1, ...Object.values(opEngel));
+  document.getElementById("ops").replaceChildren(...ops.map(([op, o]) => el("tr", {},
+    el("td", {textContent: op}),
+    el("td", {className: "num", textContent: sayi(o.olcum)}),
+    el("td", {className: "num", textContent: sayi(o.site)}),
+    el("td", {}, el("span", {className: "bar", style: "width:" + Math.round(80 * (opEngel[op] || 0) / enCok) + "px"}), sayi(opEngel[op] || 0)))));
+
+  // Son değişiklikler: takip başladıktan sonraki engel ve kaldırılma olayları
   const ilkGun = hepsi.reduce((m, [, d]) => (d.gecmis[0] && d.gecmis[0].tarih < m ? d.gecmis[0].tarih : m), "9999");
   const olaylar = [];
   for (const [s, d] of hepsi) for (const g of d.gecmis)
-    if (g.tarih > ilkGun && (!g.engelli || acik[s] === true)) olaylar.push([g.tarih, s, g.engelli]);
+    if (g.tarih > ilkGun && (!g.engelli || gosterilir(s, d))) olaylar.push([g.tarih, s, g.engelli]);
   olaylar.sort((a, b) => b[0].localeCompare(a[0]));
   const ul = document.getElementById("changes");
   if (!olaylar.length) ul.append(el("li", {}, el("span", {className: "meta", textContent: M.yok(fmt(ilkGun))})));
   for (const [t, s, e] of olaylar.slice(0, 15))
     ul.append(el("li", {}, el("time", {textContent: fmt(t)}), el("span", {className: "tag " + (e ? "t-dns" : "t-open"), textContent: e ? M.engellendi : M.acildi}), el("span", {className: "site", textContent: s})));
 
-  // Tablo
+  // Engelli siteler tablosu
   const kats = [...new Set(engelli.map(([, d]) => d.kategori))].sort((a, b) => (KAT[a] || a).localeCompare(KAT[b] || b, LOC));
-  const sel = document.getElementById("cat");
+  const sel = document.getElementById("cat"), opSel = document.getElementById("op");
   for (const k of kats) sel.append(el("option", {value: k, textContent: KAT[k] || k}));
+  for (const [op] of ops) if (opEngel[op]) opSel.append(el("option", {value: op, textContent: op}));
   const satirlar = engelli.map(([s, d]) => {
     const ilk = [...d.gecmis].reverse().find(g => g.engelli);
-    return {s, k: d.kategori, y: d.son.sonuc, t: ilk ? ilk.tarih : ""};
+    const engOps = Object.entries(d.son.operatorler || {}).filter(([, x]) => YONTEM[x.sonuc]).sort((a, b) => b[1].olcum - a[1].olcum).map(([op]) => op);
+    return {s, k: d.kategori, y: d.son.sonuc, t: ilk ? ilk.tarih : "", ops: engOps, kesin: !!d.son.kesin};
   }).sort((a, b) => b.t.localeCompare(a.t) || a.s.localeCompare(b.s));
   const tbody = document.getElementById("rows"), q = document.getElementById("q");
   function ciz() {
-    const ara = q.value.trim().toLowerCase(), k = sel.value;
-    const liste = satirlar.filter(r => (!ara || r.s.includes(ara)) && (!k || r.k === k));
+    const ara = q.value.trim().toLowerCase(), k = sel.value, op = opSel.value;
+    const liste = satirlar.filter(r => (!ara || r.s.includes(ara)) && (!k || r.k === k) && (!op || r.ops.includes(op)));
     tbody.replaceChildren(...liste.map(r => el("tr", {},
       el("td", {className: "site", textContent: r.s}),
       el("td", {textContent: KAT[r.k] || r.k || "–"}),
-      el("td", {}, el("span", {className: "tag " + YONTEM[r.y][1], textContent: YONTEM[r.y][0]})),
+      el("td", {}, el("span", {className: "tag " + YONTEM[r.y][1], textContent: YONTEM[r.y][0]}), ...(r.kesin ? [] : [el("span", {className: "olasi", textContent: M.olasi})])),
+      el("td", {className: "ops", textContent: r.ops.join(", ")}),
       el("td", {textContent: r.t === ilkGun ? M.ilkten : fmt(r.t)}))));
-    if (!liste.length) tbody.append(el("tr", {}, el("td", {colSpan: 4, className: "empty", textContent: M.eslesme})));
+    if (!liste.length) tbody.append(el("tr", {}, el("td", {colSpan: 5, className: "empty", textContent: M.eslesme})));
   }
-  q.addEventListener("input", ciz); sel.addEventListener("change", ciz); ciz();
+  q.addEventListener("input", ciz); sel.addEventListener("change", ciz); opSel.addEventListener("change", ciz); ciz();
 }
 diliUygula();
 yukle().catch(e => { document.getElementById("meta").textContent = M.hata + e.message; });

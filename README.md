@@ -1,95 +1,100 @@
 # Türkiye Sansür Gözlemevi
 
-Türkiye'den hangi sitelerin engelli olduğunu, **nasıl** engellendiğini ve **ne zamandan beri** engelli olduğunu her gün ölçer. Sonuçlar herkese açık bir sayfada yayınlanır: **https://cybergah.github.io/sansur-gozlemevi/**
+Türkiye'de hangi sitelerin engelli olduğunu, **hangi operatörde**, **nasıl** ve **ne zamandan beri** engellendiğini her gün gösterir. Sonuçlar herkese açık bir sayfada yayınlanır: **https://cybergah.github.io/sansur-gozlemevi/**
 
 **[English below](#in-english)** · Sayfa İngilizce de okunabilir: **https://cybergah.github.io/sansur-gozlemevi/?lang=en**
 
 ## Nasıl çalışır?
 
-1. **Ölçüm (Türkiye'den):** `olc.py` yaklaşık 2.100 siteyi dört katmanda dener:
-   - **DNS:** Operatörün verdiği adres ile şifreli DNS'in (DoH) verdiği adres karşılaştırılır.
-   - **Bağlantı (IP):** Sitenin gerçek adresine bağlanılır.
-   - **Site adı (SNI):** Site adıyla şifreli bağlantı kurulur. Bağlantının site adı görülünce kesilip kesilmediğine bakılır.
-   - **Sayfa:** Sayfanın açılıp açılmadığına bakılır.
-2. **İşleme:** `isle.py` günün sonucunu `veri/gunluk/` klasörüne yazar ve `veri/durum.json` dosyasındaki geçmişi günceller. Geçmiş, her sitenin ne zaman engellendiğini ve ne zaman açıldığını tutar.
-3. **Karşı kontrol (Türkiye dışından):** Her gönderimde GitHub Actions, engelli görünen siteleri ABD'deki bir sunucudan yeniden dener (`kontrol.py`). Orada da açılmayan site engelli sayılmaz, çünkü sorun sitenin kendisindedir.
-4. **Sayfa:** `site/index.html` dosyası GitHub Pages'te yayınlanır.
+Ölçümler [OONI](https://ooni.org) gönüllülerinindir. Türkiye'de pek çok kişi OONI Probe uygulamasıyla siteleri kendi internetinden dener; OONI bu ölçümleri her gün herkese açık yayınlar. Gözlemevi bu açık veriyi toplar ve sade bir tabloya çevirir.
+
+1. **Toplama:** Her sabah GitHub Actions `ooni.py`'yi çalıştırır. Program OONI'den son 7 günün Türkiye web ölçümlerini alır: site ve operatör bazında ölçüm sayıları (tek sorgu) ve engel yöntemini görmek için son 3 günün anomali çıkan ölçümlerinden bir örnek.
+2. **Karar:** [Citizen Lab listesindeki](https://github.com/citizenlab/test-lists) yaklaşık 2.100 sitenin her biri için, her operatörde ayrı karar verilir:
+   - OONI ölçümde Türkiye'nin engel sayfasını gördüyse (parmak izi) tek ölçüm yeter. Bu **doğrulanmış** engeldir.
+   - Değilse en az 5 başarılı ölçümün %60'ında sorun çıkması gerekir. Bu **olası** engeldir.
+   - Yalnızca ev ve mobil internet operatörleri sayılır: Türk Telekom, Türk Telekom Mobil, Superonline, Turkcell, Vodafone, TurkNet, Türksat Kablo ve Netspeed. Şirket, okul ve veri merkezi ağları kendi filtrelerini uyguladığı için sonucu bozar.
+   - Engel yöntemi OONI'nin her ölçüm için yaptığı tahminden gelir: DNS, IP adresi, bağlantının kesilmesi (çoğunlukla site adına, SNI'ye göre) ya da sayfanın değiştirilmesi.
+3. **Geçmiş:** `isle.py` günün sonucunu `veri/gunluk/` klasörüne yazar ve `veri/durum.json` dosyasındaki geçmişi günceller. Geçmiş, her sitenin ne zaman engellendiğini ve ne zaman açıldığını tutar.
+4. **Karşı kontrol (Türkiye dışından):** Olası engeller GitHub'ın ABD'deki sunucusundan ayrıca denenir (`kontrol.py`). Orada da açılmayan site engelli sayılmaz, çünkü sorun sitenin kendisindedir.
+5. **Sayfa:** `site/index.html` GitHub Pages'te Türkçe ve İngilizce yayınlanır.
 
 ## Veri biçimi
 
-Bütün veriler JSON'dur. Alanların tam tanımı [`sema/`](sema/) klasöründeki JSON Schema (2020-12) dosyalarındadır. Her gönderimde GitHub Actions verinin bu şemalara uyduğunu `dogrula.py` ile kontrol eder.
+Bütün veriler JSON'dur. Alanların tam tanımı [`sema/`](sema/) klasöründeki JSON Schema (2020-12) dosyalarındadır. Her çalışmada GitHub Actions verinin bu şemalara uyduğunu `dogrula.py` ile kontrol eder.
 
 | Dosya | Şema | İçerik |
 |---|---|---|
-| `veri/durum.json` | [`durum.schema.json`](sema/durum.schema.json) | Her sitenin şu anki durumu ve engel geçmişi |
-| `veri/gunluk/YYYY-MM-DD.json` | [`gunluk.schema.json`](sema/gunluk.schema.json) | Bir günün ölçüm özeti; dosya adı ölçüm günüdür (UTC) |
-| [`kontrol.json`](https://cybergah.github.io/sansur-gozlemevi/kontrol.json) (yalnız sayfada) | [`kontrol.schema.json`](sema/kontrol.schema.json) | Türkiye dışından karşı kontrol sonucu |
+| `veri/durum.json` | [`durum.schema.json`](sema/durum.schema.json) | Her sitenin şu anki durumu, engel geçmişi ve operatör özeti |
+| `veri/gunluk/YYYY-MM-DD.json` | [`gunluk.schema.json`](sema/gunluk.schema.json) | Bir günün sonucu; dosya adı 7 günlük pencerenin son günüdür (UTC) |
+| [`kontrol.json`](https://cybergah.github.io/sansur-gozlemevi/kontrol.json) (yalnız sayfada) | [`kontrol.schema.json`](sema/kontrol.schema.json) | Olası engellerin Türkiye dışından karşı kontrolü |
 
 `veri/durum.json` içinden kısaltılmış bir örnek:
 
 ```json
 {
- "son_olcum": "2026-11-14T17:19:09+00:00",
- "site_sayisi": 2121,
+ "kaynak": "OONI",
+ "pencere": {"baslangic": "2026-11-11", "bitis": "2026-11-17"},
+ "operatorler": {"Türk Telekom": {"olcum": 58651, "site": 2071, "engelli": 232}},
  "siteler": {
-  "anonymouse.org": {
-   "kategori": "ANON",
-   "son_olcum": "2026-11-14",
-   "son": {"sonuc": "sni_engeli", "dns": "ayni", "tcp": "tamam", "tls": "zaman_asimi"},
-   "gecmis": [{"tarih": "2026-11-14", "engelli": true, "sonuc": "sni_engeli"}]
+  "t24.com.tr": {
+   "kategori": "NEWS",
+   "son_olcum": "2026-11-17",
+   "son": {
+    "sonuc": "dns", "kesin": true,
+    "operatorler": {"Türk Telekom": {"sonuc": "dns", "olcum": 72, "kesin": true}}
+   },
+   "gecmis": [{"tarih": "2026-11-17", "engelli": true, "sonuc": "dns"}]
   }
  }
 }
 ```
 
-- **`sonuc`:** Değerler `acik`, `dns`, `ip_engeli`, `sni_engeli`, `http_hatasi` ya da `bilinmiyor` olabilir. Engel sayılanlar `dns`, `ip_engeli` ve `sni_engeli`dir. `bilinmiyor`, sitenin adının şifreli DNS'te de çözülmediğini gösterir; site kapanmış olabilir.
-- **`dns`, `tcp`, `tls`:** Yalnızca engelli sitelerde yazılır ve engelin hangi katmanda olduğunu gösterir. Örnekteki gibi DNS ve bağlantı `tamam`, şifreli bağlantı `zaman_asimi` ise engel site adına (SNI) göre konmuştur.
+- **`sonuc`:** `acik`, `dns`, `ip_engeli`, `baglanti_kesildi`, `sayfa_degistirildi`, `engelli` (yöntem belirlenemedi) ya da `bilinmiyor` (yeterli ölçüm yok). `acik` ve `bilinmiyor` dışındakiler engel sayılır.
+- **`kesin`:** OONI en az bir ölçümde Türkiye'nin engel sayfasını gördü. Yoksa alan yazılmaz ve engel "olası" sayılır.
+- **`operatorler`:** Yalnızca engelli sitelerde, operatör operatör sonuç ve ölçüm sayısı.
 - **`gecmis`:** Her gün değil, yalnızca engel durumu değişince yeni satır eklenir. Son satırın tarihi, şu anki durumun ne zamandan beri sürdüğünü gösterir.
 - **`kategori`:** Citizen Lab kategori kodudur, örneğin `NEWS`, `HUMR`, `POLR`, `LGBT`.
 
-Verilerde ölçümü yapan bağlantıyı, operatörü ya da IP adresini tanıtan hiçbir alan yoktur, olmayacak da.
-
-Kendi bilgisayarında doğrulamak için:
+Kendi bilgisayarında çalıştırmak ve doğrulamak için:
 
 ```bash
-python -m pip install jsonschema
+python -m pip install -r requirements.txt jsonschema
+python ooni.py            # dünü bitiş günü alır; ya da: python ooni.py 2026-11-17
 python dogrula.py
 ```
 
 ## Sınırlar
 
-- Ölçüm tek bir bağlantıdan yapılır. Başka operatörlerde sonuç farklı olabilir. Ölçümü yapan bağlantı ve operatör, gizlilik için yayınlanmaz. Ölçüm bilgisayarı başka bir bağlantıdayken ya da internet çıkışı Türkiye dışındayken (örneğin VPN açıkken) ölçüm yapılmaz. Bağlantının koptuğu, sitelerin çoğunun "bilinmiyor" çıktığı günler de yayınlanmaz.
+- Ölçümler gönüllülerden geldiği için her site her gün her operatörde ölçülmeyebilir. Küçük operatörlerde veri azdır; sayfadaki operatör tablosu kaç sitenin değerlendirilebildiğini gösterir.
+- Sonuç 7 günlük ölçümlere dayanır. Yeni bir engel ya da kaldırılan bir engel birkaç gün gecikmeyle görünebilir.
 - Yalnızca ana sayfaya bakılır. Tek bir haberin ya da sayfanın engellenmesi görünmez.
-- Sayfa metnine bakılmaz. HTTPS'te sertifika doğrulandıysa gelen sayfa sitenin kendisidir. İlk denemede "5651" ya da "erişim engellenmiştir" geçen sayfaların hepsi, sitenin kendi içeriği ya da kendi yönlendirmesiydi.
-
-## Kendin çalıştır
-
-```bash
-python -m pip install -r requirements.txt
-python olc.py liste.txt sonuc.json   # her satırda bir site adı
-python isle.py sonuc.json
-```
+- Takip 17 Kasım 2026'da başladı. Bu tarihten önceki engeller "takip başlamadan önce" olarak görünür.
 
 ## In English
 
-**Turkey Censorship Observatory** measures every day which websites are blocked in Turkey, **how** they are blocked and **since when**. Results are published on an open page: **https://cybergah.github.io/sansur-gozlemevi/?lang=en**
+**Turkey Censorship Observatory** shows every day which websites are blocked in Turkey, **on which ISP**, **how** and **since when**. Results are published on an open page: **https://cybergah.github.io/sansur-gozlemevi/?lang=en**
 
 **How it works**
 
-1. **Measurement, from inside Turkey:** `olc.py` tests about 2,100 sites from the [Citizen Lab test lists](https://github.com/citizenlab/test-lists) at four layers:
-   - **DNS:** the ISP resolver's answer is compared with encrypted DNS (DoH).
-   - **IP:** a TCP connection is made to the site's real address.
-   - **SNI:** a TLS handshake is made with the site name, to see whether it is cut when the name is seen.
-   - **HTTP:** whether the page loads.
-2. **Processing:** `isle.py` writes the day's results to `veri/gunluk/` and updates the history in `veri/durum.json`. The history records when each site was blocked and when it was unblocked.
-3. **Cross-check, from outside Turkey:** on every push, GitHub Actions re-tests the sites that look blocked from a server abroad (`kontrol.py`). A site that does not load there either is not counted as blocked.
-4. **Page:** `site/index.html` is published on GitHub Pages, in Turkish and English.
+The measurements come from [OONI](https://ooni.org) volunteers, who test websites from their own connections in Turkey with the OONI Probe app. OONI publishes the results openly every day; the observatory collects them and turns them into a simple table.
 
-**Data:** all files are JSON, described by JSON Schemas (2020-12) in [`sema/`](sema/) and validated on every push by `dogrula.py`. Field names are in Turkish. The main ones are:
+1. **Collect:** every morning GitHub Actions runs `ooni.py`. It fetches the last 7 days of Turkish web measurements from the OONI API: counts per site and ISP (one query), plus a sample of the anomalous measurements from the last 3 days to see the blocking method.
+2. **Decide:** for each of about 2,100 sites from the [Citizen Lab test lists](https://github.com/citizenlab/test-lists), a separate decision is made for each ISP:
+   - If OONI saw Turkey's block page (fingerprint) in a measurement, one measurement is enough. This is a **verified** block.
+   - Otherwise at least 60% of at least 5 successful measurements must show a problem. This is a **possible** block.
+   - Only home and mobile ISPs are counted: Türk Telekom, Türk Telekom Mobil, Superonline, Turkcell, Vodafone, TurkNet, Türksat Kablo and Netspeed. Corporate, school and data-centre networks apply their own filters and would skew the result.
+   - The blocking method comes from OONI's per-measurement analysis: DNS, IP address, connection cut (usually by site name, SNI) or page replaced.
+3. **History:** `isle.py` writes the day's result to `veri/gunluk/` and updates the history in `veri/durum.json`, which records when each site was blocked and unblocked.
+4. **Cross-check, from outside Turkey:** possible blocks are re-tested from a GitHub server in the US (`kontrol.py`). A site that does not load there either is not counted as blocked.
+5. **Page:** `site/index.html` is published on GitHub Pages, in Turkish and English.
+
+**Data:** all files are JSON, described by JSON Schemas (2020-12) in [`sema/`](sema/) and validated on every run by `dogrula.py`. Field names are in Turkish:
 
 | Field | Meaning |
 |---|---|
-| `sonuc` | Result: `acik` (open), `dns`, `ip_engeli` (IP block), `sni_engeli` (SNI block), `http_hatasi` (page error, not a block), `bilinmiyor` (unknown) |
+| `sonuc` | Result: `acik` (open), `dns`, `ip_engeli` (IP block), `baglanti_kesildi` (connection cut), `sayfa_degistirildi` (page replaced), `engelli` (blocked, method unclear), `bilinmiyor` (not enough data) |
+| `kesin` | Verified: OONI saw Turkey's block page |
+| `operatorler` | Per-ISP results (ISP summary at the top level) |
 | `gecmis` | History |
 | `engelli` | Blocked |
 | `tarih` | Date |
@@ -97,15 +102,16 @@ python isle.py sonuc.json
 
 **Limits**
 
-- Measurements come from a single connection, so results may differ on other ISPs. The connection and the ISP are not published, for privacy.
-- No measurement is taken when the measuring computer is on another network or its traffic leaves Turkey (for example through a VPN). Days when the connection dropped and most sites came back unknown are not published.
+- Because measurements come from volunteers, not every site is measured on every ISP every day. Small ISPs have little data.
+- Results are based on a 7-day window, so new blocks and unblocks may show up a few days late.
 - Only the home page is checked, so blocks on single articles or pages are not visible.
-
-Code: MIT. Site list and measurement data: CC BY-NC-SA 4.0, derived from the Citizen Lab test lists.
+- Tracking started on 17 November 2026.
 
 ## Lisans
 
 - Kod: MIT.
-- Site listesi (`liste.csv`) ve ölçüm verileri: [Citizen Lab test listelerinden](https://github.com/citizenlab/test-lists) türetilmiştir, [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/) lisanslıdır.
+- Ölçüm verisi: [OONI](https://ooni.org/data/), [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/).
+- Site listesi (`liste.csv`): [Citizen Lab test listelerinden](https://github.com/citizenlab/test-lists) türetilmiştir, CC BY-NC-SA 4.0.
+- Bu depodaki sonuç dosyaları bu iki kaynaktan türetilmiştir ve aynı lisansla (CC BY-NC-SA 4.0) paylaşılır.
 
-Bir [Cybergah](https://github.com/cybergah) projesi.
+Bir [Cybergah](https://github.com/cybergah) projesi. Ölçümler için OONI gönüllülerine teşekkürler.

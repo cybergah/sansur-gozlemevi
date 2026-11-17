@@ -1,10 +1,11 @@
-"""Bir günlük ölçümü işler.
+"""Günlük sonuçtan her sitenin şu anki durumunu ve engel geçmişini kurar.
 
-  veri/gunluk/YYYY-MM-DD.json  her sitenin o günkü sonucu (küçük biçim)
+  veri/gunluk/YYYY-MM-DD.json  her sitenin o günkü sonucu
   veri/durum.json              her sitenin şu anki durumu ve değişim geçmişi
 
-Kullanım: python isle.py ham-sonuc.json
-          python isle.py --yeniden   (durum.json'u günlük dosyalardan baştan kurar)
+Günlük sonucu ooni.py üretir. Bu dosya yalnızca geçmişi işler.
+
+Kullanım: python isle.py --yeniden   (durum.json'u günlük dosyalardan baştan kurar)
 """
 
 from __future__ import annotations
@@ -15,27 +16,18 @@ import sys
 from pathlib import Path
 
 KOK = Path(__file__).parent
-ENGEL = {"dns", "sni_engeli", "ip_engeli"}
+
+# Engel sayılan sonuçlar. "engelli": engel var ama yöntemi belirlenemedi.
+ENGEL = {"dns", "ip_engeli", "baglanti_kesildi", "sayfa_degistirildi", "engelli"}
+
+# Sitelerin yarısından çoğu için veri yoksa o gün yayınlanmaz.
+# Yayınlansaydı engelli bütün siteler "açıldı" görünürdü.
+BOZUK_ORAN = 0.5
 
 
 def kategoriler() -> dict[str, str]:
     with open(KOK / "liste.csv", encoding="utf-8") as f:
         return {r["site"]: r["kategori"] for r in csv.DictReader(f)}
-
-
-def ozet(o: dict) -> dict:
-    """Yayınlanacak alanlar. Ölçümü yapan bağlantıyı tanıtan bir şey içermez."""
-    d = {"sonuc": o["sonuc"]}
-    if o["sonuc"] in ENGEL:
-        d["dns"] = o["sistem_hata"] or ("farkli_adres" if o["sistem"] and not set(o["sistem"]) & set(o["doh"]) else "ayni")
-        d["tcp"] = o["tcp"] or "tamam"
-        d["tls"] = o["tls"] or "tamam"
-    return d
-
-
-# Ölçümün yarısından çoğu "bilinmiyor" ise bağlantı o an kopuktu: o gün yayınlanmaz.
-# Yayınlansaydı engelli bütün siteler "açıldı" görünürdü.
-BOZUK_ORAN = 0.5
 
 
 def bozuk(siteler: dict) -> bool:
@@ -46,6 +38,9 @@ def gecmise_isle(durum: dict, gun: str, zaman: str, bugun: dict, kat: dict) -> N
     for site, d in bugun.items():
         s = durum["siteler"].setdefault(site, {"gecmis": []})
         s["kategori"] = kat.get(site, "")
+        if d["sonuc"] == "bilinmiyor" and s["gecmis"]:
+            # Veri gelmeyen gün durumu değiştirmez; son bilinen durum geçerli kalır.
+            continue
         engelli = d["sonuc"] in ENGEL
         onceki = s["gecmis"][-1]["engelli"] if s["gecmis"] else None
         # Yalnızca engel durumu değişince geçmişe bir satır eklenir.
@@ -59,27 +54,8 @@ def gecmise_isle(durum: dict, gun: str, zaman: str, bugun: dict, kat: dict) -> N
 
 def yaz_durum(durum: dict) -> None:
     yol = KOK / "veri" / "durum.json"
-    json.dump(durum, open(yol, "w", encoding="utf-8"), ensure_ascii=False, indent=1, sort_keys=True)
-
-
-def main(ham: str) -> None:
-    veri = json.load(open(ham, encoding="utf-8"))
-    gun = veri["zaman"][:10]
-    bugun = {o["site"]: ozet(o) for o in veri["olcumler"]}
-    if bozuk(bugun):
-        print(f"{gun}: ölçüm bozuk (çoğu site bilinmiyor), yayınlanmadı", file=sys.stderr)
-        sys.exit(3)
-
-    gunluk = KOK / "veri" / "gunluk"
-    gunluk.mkdir(parents=True, exist_ok=True)
-    json.dump({"zaman": veri["zaman"], "siteler": bugun}, open(gunluk / f"{gun}.json", "w", encoding="utf-8"),
-              ensure_ascii=False, separators=(",", ":"), sort_keys=True)
-
-    yol = KOK / "veri" / "durum.json"
-    durum = json.load(open(yol, encoding="utf-8")) if yol.exists() else {"siteler": {}}
-    gecmise_isle(durum, gun, veri["zaman"], bugun, kategoriler())
-    yaz_durum(durum)
-    print(f"{gun}: {sum(d['sonuc'] in ENGEL for d in bugun.values())} engelli / {len(bugun)} site")
+    with open(yol, "w", encoding="utf-8") as f:
+        json.dump(durum, f, ensure_ascii=False, indent=1, sort_keys=True)
 
 
 def yeniden() -> None:
@@ -92,6 +68,9 @@ def yeniden() -> None:
             print(f"{f.stem}: bozuk, atlandı")
             continue
         gecmise_isle(durum, f.stem, g["zaman"], g["siteler"], kat)
+        for k in ("kaynak", "pencere", "operatorler"):
+            if k in g:
+                durum[k] = g[k]
     yaz_durum(durum)
 
 
@@ -99,4 +78,5 @@ if __name__ == "__main__":
     if sys.argv[1:] == ["--yeniden"]:
         yeniden()
     else:
-        main(sys.argv[1])
+        print(__doc__)
+        sys.exit(2)

@@ -1,22 +1,82 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://raw.githubusercontent.com/cybergah/sansur-gozlemevi/main/sema/gunluk.schema.json",
-  "title": "Bir günün ölçümü (veri/gunluk/YYYY-MM-DD.json)",
-  "description": "Dosya adı ölçüm gününün tarihidir (UTC). Her gün bir dosya; bağlantının koptuğu ya da ev ağı dışında yapılan ölçümler yazılmaz.",
+  "title": "Bir günün sonucu (veri/gunluk/YYYY-MM-DD.json)",
+  "description": "Dosya adı, 7 günlük ölçüm penceresinin son günüdür (UTC). ooni.py her gün yazar.",
   "type": "object",
-  "required": ["zaman", "siteler"],
+  "required": [
+    "zaman",
+    "kaynak",
+    "pencere",
+    "operatorler",
+    "siteler"
+  ],
   "additionalProperties": false,
   "properties": {
     "zaman": {
       "type": "string",
       "format": "date-time",
-      "description": "Ölçümün bittiği an, UTC, ISO 8601. Örnek: 2026-11-14T17:19:09+00:00"
+      "description": "Dosyanın üretildiği an, UTC, ISO 8601."
+    },
+    "kaynak": {
+      "const": "OONI"
+    },
+    "pencere": {
+      "type": "object",
+      "required": [
+        "baslangic",
+        "bitis"
+      ],
+      "additionalProperties": false,
+      "description": "Sonucun dayandığı ölçüm günleri (UTC, ikisi de dahil).",
+      "properties": {
+        "baslangic": {
+          "type": "string",
+          "format": "date"
+        },
+        "bitis": {
+          "type": "string",
+          "format": "date"
+        }
+      }
+    },
+    "operatorler": {
+      "type": "object",
+      "description": "Operatör özeti, son 7 gün. Yalnızca ev ve mobil internet operatörleri sayılır.",
+      "additionalProperties": {
+        "type": "object",
+        "required": [
+          "olcum",
+          "site",
+          "engelli"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "olcum": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "OONI ölçüm sayısı"
+          },
+          "site": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Hakkında karar verilebilen site sayısı"
+          },
+          "engelli": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Bu operatörde engelli çıkan site sayısı"
+          }
+        }
+      }
     },
     "siteler": {
       "type": "object",
-      "description": "Anahtar: site adı ya da IP adresi (liste.csv'deki gibi). Değer: o günkü sonuç.",
       "minProperties": 1,
-      "additionalProperties": { "$ref": "olcum.schema.json" }
+      "description": "Anahtar: site adı ya da IP adresi (liste.csv'deki gibi).",
+      "additionalProperties": {
+        "$ref": "olcum.schema.json"
+      }
     }
   }
 }

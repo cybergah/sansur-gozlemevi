@@ -1,6 +1,7 @@
-"""Karşı kontrol: Türkiye'den engelli görünen siteleri dışarıdan (GitHub sunucusu) dener.
+"""Karşı kontrol: OONI'nin engel sayfasıyla doğrulamadığı olası engelleri dışarıdan dener.
 
-Dışarıdan da açılmayan site sansürlü sayılmaz: sorun sitenin kendisindedir.
+Dışarıdan (GitHub sunucusu) da açılmayan site sansürlü sayılmaz: sorun sitenin kendisindedir.
+Engel sayfasıyla doğrulanmış ("kesin") siteler zaten engellidir, onlar denenmez.
 
 Kullanım: python kontrol.py veri/durum.json cikti.json
 """
@@ -15,13 +16,12 @@ from datetime import datetime, timezone
 import httpx
 
 import olc
-
-ENGEL = {"dns", "sni_engeli", "ip_engeli"}
+from isle import ENGEL
 
 
 async def main(durum_yolu: str, cikti: str) -> None:
     durum = json.load(open(durum_yolu, encoding="utf-8"))
-    siteler = [s for s, d in durum["siteler"].items() if d["son"]["sonuc"] in ENGEL]
+    siteler = [s for s, d in durum["siteler"].items() if d["son"]["sonuc"] in ENGEL and not d["son"].get("kesin")]
     sem = asyncio.Semaphore(olc.ESZAMANLI)
     async with httpx.AsyncClient(timeout=olc.ZAMAN, follow_redirects=True, headers={"User-Agent": olc.UA}) as istemci:
         sonuclar = await asyncio.gather(*(olc.olc(istemci, sem, s) for s in siteler))
