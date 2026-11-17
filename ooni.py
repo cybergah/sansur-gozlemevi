@@ -175,6 +175,12 @@ def main(arg: list[str]) -> None:
         akis.reconfigure(encoding="utf-8")
     bit = date.fromisoformat(arg[0]) if arg else datetime.now(timezone.utc).date() - timedelta(days=1)
     bas = bit - timedelta(days=PENCERE - 1)
+    yol = isle.KOK / "veri" / "durum.json"
+    durum = json.load(open(yol, encoding="utf-8")) if yol.exists() else {"siteler": {}}
+    son_gun = durum.get("pencere", {}).get("bitis", "")
+    if bit.isoformat() < son_gun:
+        print(f"{bit}: yayındaki günden ({son_gun}) eski, işlenmedi", file=sys.stderr)
+        sys.exit(3)
     kat = isle.kategoriler()
     siteler = list(kat)
     with httpx.Client(timeout=120, headers={"User-Agent": "sansur-gozlemevi (+https://github.com/cybergah/sansur-gozlemevi)"}) as ist:
@@ -195,8 +201,6 @@ def main(arg: list[str]) -> None:
         json.dump({"zaman": zaman, "kaynak": "OONI", "pencere": pencere, "operatorler": ozet, "siteler": bugun},
                   f, ensure_ascii=False, separators=(",", ":"), sort_keys=True)
 
-    yol = isle.KOK / "veri" / "durum.json"
-    durum = json.load(open(yol, encoding="utf-8")) if yol.exists() else {"siteler": {}}
     isle.gecmise_isle(durum, gun, zaman, bugun, kat)
     durum.update(kaynak="OONI", pencere=pencere, operatorler=ozet)
     isle.yaz_durum(durum)
