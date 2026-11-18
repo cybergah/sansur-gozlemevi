@@ -8,23 +8,23 @@
   },
   "Superonline": {
    "engelli": 206,
-   "olcum": 21361,
+   "olcum": 21561,
    "site": 2067
   },
   "TurkNet": {
-   "engelli": 126,
-   "olcum": 21333,
-   "site": 2079
+   "engelli": 129,
+   "olcum": 21819,
+   "site": 2080
   },
   "Turkcell": {
-   "engelli": 42,
-   "olcum": 3426,
-   "site": 222
+   "engelli": 47,
+   "olcum": 3628,
+   "site": 252
   },
   "Türk Telekom": {
    "engelli": 232,
-   "olcum": 58651,
-   "site": 2071
+   "olcum": 59415,
+   "site": 2072
   },
   "Türk Telekom Mobil": {
    "engelli": 1,
@@ -32,9 +32,9 @@
    "site": 6
   },
   "Türksat Kablo": {
-   "engelli": 111,
-   "olcum": 2375,
-   "site": 239
+   "engelli": 116,
+   "olcum": 2475,
+   "site": 247
   },
   "Vodafone": {
    "engelli": 19,
@@ -946,7 +946,7 @@
      },
      "Türk Telekom": {
       "kesin": true,
-      "olcum": 28,
+      "olcum": 30,
       "sonuc": "dns"
      },
      "Türksat Kablo": {
@@ -1575,7 +1575,7 @@
      },
      "TurkNet": {
       "kesin": true,
-      "olcum": 10,
+      "olcum": 11,
       "sonuc": "dns"
      },
      "Turkcell": {
@@ -1585,7 +1585,7 @@
      },
      "Türk Telekom": {
       "kesin": true,
-      "olcum": 24,
+      "olcum": 25,
       "sonuc": "dns"
      }
     },
@@ -1884,11 +1884,11 @@
       "sonuc": "ip_engeli"
      },
      "TurkNet": {
-      "olcum": 10,
+      "olcum": 11,
       "sonuc": "ip_engeli"
      },
      "Türk Telekom": {
-      "olcum": 24,
+      "olcum": 25,
       "sonuc": "ip_engeli"
      }
     },
@@ -3318,7 +3318,7 @@
       "sonuc": "baglanti_kesildi"
      },
      "TurkNet": {
-      "olcum": 10,
+      "olcum": 11,
       "sonuc": "acik"
      }
     },
@@ -3858,12 +3858,12 @@
     "kesin": true,
     "operatorler": {
      "Superonline": {
-      "olcum": 5,
+      "olcum": 6,
       "sonuc": "acik"
      },
      "TurkNet": {
       "kesin": true,
-      "olcum": 7,
+      "olcum": 8,
       "sonuc": "dns"
      },
      "Türk Telekom": {
@@ -3979,22 +3979,22 @@
      },
      "Superonline": {
       "kesin": true,
-      "olcum": 67,
+      "olcum": 68,
       "sonuc": "dns"
      },
      "TurkNet": {
       "kesin": true,
-      "olcum": 79,
+      "olcum": 80,
       "sonuc": "dns"
      },
      "Turkcell": {
       "kesin": true,
-      "olcum": 4,
-      "sonuc": "baglanti_kesildi"
+      "olcum": 5,
+      "sonuc": "dns"
      },
      "Türk Telekom": {
       "kesin": true,
-      "olcum": 176,
+      "olcum": 178,
       "sonuc": "dns"
      },
      "Türksat Kablo": {
@@ -4072,11 +4072,11 @@
      },
      "TurkNet": {
       "kesin": true,
-      "olcum": 11,
+      "olcum": 12,
       "sonuc": "dns"
      },
      "Türk Telekom": {
-      "olcum": 21,
+      "olcum": 23,
       "sonuc": "dns"
      }
     },
@@ -4216,7 +4216,7 @@
       "sonuc": "acik"
      },
      "Türk Telekom": {
-      "olcum": 12,
+      "olcum": 13,
       "sonuc": "acik"
      }
     },
@@ -4374,7 +4374,7 @@
       "sonuc": "dns"
      },
      "Türk Telekom": {
-      "olcum": 12,
+      "olcum": 13,
       "sonuc": "acik"
      }
     },
@@ -4480,7 +4480,7 @@
      },
      "Türk Telekom": {
       "kesin": true,
-      "olcum": 12,
+      "olcum": 13,
       "sonuc": "dns"
      },
      "Türksat Kablo": {
@@ -4671,12 +4671,12 @@
      },
      "Turkcell": {
       "kesin": true,
-      "olcum": 2,
-      "sonuc": "baglanti_kesildi"
+      "olcum": 3,
+      "sonuc": "dns"
      },
      "Türk Telekom": {
       "kesin": true,
-      "olcum": 27,
+      "olcum": 28,
       "sonuc": "dns"
      },
      "Türksat Kablo": {
@@ -5565,7 +5565,7 @@
    "son": {
     "operatorler": {
      "Superonline": {
-      "olcum": 4,
+      "olcum": 5,
       "sonuc": "acik"
      },
      "TurkNet": {
@@ -5962,7 +5962,7 @@
      },
      "Türk Telekom": {
       "kesin": true,
-      "olcum": 25,
+      "olcum": 26,
       "sonuc": "engelli"
      }
     },
@@ -7562,11 +7562,11 @@
       "sonuc": "ip_engeli"
      },
      "TurkNet": {
-      "olcum": 10,
+      "olcum": 11,
       "sonuc": "ip_engeli"
      },
      "Türk Telekom": {
-      "olcum": 20,
+      "olcum": 22,
       "sonuc": "ip_engeli"
      }
     },
@@ -7905,7 +7905,7 @@
     "operatorler": {
      "Superonline": {
       "kesin": true,
-      "olcum": 5,
+      "olcum": 6,
       "sonuc": "dns"
      },
      "TurkNet": {
@@ -8158,7 +8158,7 @@
       "sonuc": "dns"
      },
      "Türk Telekom": {
-      "olcum": 26,
+      "olcum": 27,
       "sonuc": "dns"
      }
     },
@@ -8999,7 +8999,7 @@
      },
      "TurkNet": {
       "kesin": true,
-      "olcum": 5,
+      "olcum": 6,
       "sonuc": "dns"
      },
      "Türk Telekom": {
@@ -9050,7 +9050,7 @@
      },
      "TurkNet": {
       "kesin": true,
-      "olcum": 5,
+      "olcum": 6,
       "sonuc": "dns"
      },
      "Türk Telekom": {
@@ -9084,8 +9084,8 @@
       "sonuc": "ip_engeli"
      },
      "TurkNet": {
-      "olcum": 5,
-      "sonuc": "acik"
+      "olcum": 6,
+      "sonuc": "ip_engeli"
      },
      "Türk Telekom": {
       "olcum": 13,
@@ -9112,8 +9112,8 @@
       "sonuc": "ip_engeli"
      },
      "TurkNet": {
-      "olcum": 5,
-      "sonuc": "acik"
+      "olcum": 6,
+      "sonuc": "ip_engeli"
      },
      "Türk Telekom": {
       "olcum": 13,
@@ -9138,12 +9138,12 @@
     "operatorler": {
      "Superonline": {
       "kesin": true,
-      "olcum": 4,
+      "olcum": 5,
       "sonuc": "dns"
      },
      "TurkNet": {
       "kesin": true,
-      "olcum": 5,
+      "olcum": 6,
       "sonuc": "dns"
      },
      "Türk Telekom": {
@@ -9235,11 +9235,11 @@
      },
      "TurkNet": {
       "kesin": true,
-      "olcum": 10,
+      "olcum": 11,
       "sonuc": "dns"
      },
      "Türk Telekom": {
-      "olcum": 20,
+      "olcum": 22,
       "sonuc": "acik"
      }
     },
@@ -10187,7 +10187,7 @@
       "sonuc": "dns"
      },
      "Türk Telekom": {
-      "olcum": 20,
+      "olcum": 22,
       "sonuc": "dns"
      }
     },
@@ -10649,7 +10649,7 @@
       "sonuc": "acik"
      },
      "Türk Telekom": {
-      "olcum": 28,
+      "olcum": 30,
       "sonuc": "ip_engeli"
      }
     },
@@ -10713,7 +10713,7 @@
      },
      "Türk Telekom": {
       "kesin": true,
-      "olcum": 11,
+      "olcum": 12,
       "sonuc": "dns"
      },
      "Türksat Kablo": {
@@ -11062,6 +11062,11 @@
       "kesin": true,
       "olcum": 25,
       "sonuc": "dns"
+     },
+     "Türksat Kablo": {
+      "kesin": true,
+      "olcum": 1,
+      "sonuc": "dns"
      }
     },
     "sonuc": "dns"
@@ -11192,6 +11197,11 @@
       "kesin": true,
       "olcum": 25,
       "sonuc": "dns"
+     },
+     "Türksat Kablo": {
+      "kesin": true,
+      "olcum": 1,
+      "sonuc": "dns"
      }
     },
     "sonuc": "dns"
@@ -11223,6 +11233,11 @@
      "Türk Telekom": {
       "kesin": true,
       "olcum": 26,
+      "sonuc": "dns"
+     },
+     "Türksat Kablo": {
+      "kesin": true,
+      "olcum": 1,
       "sonuc": "dns"
      }
     },
@@ -11692,7 +11707,7 @@
       "sonuc": "dns"
      },
      "Türk Telekom": {
-      "olcum": 23,
+      "olcum": 25,
       "sonuc": "dns"
      }
     },
@@ -12327,6 +12342,11 @@
      "Türk Telekom": {
       "kesin": true,
       "olcum": 26,
+      "sonuc": "dns"
+     },
+     "Türksat Kablo": {
+      "kesin": true,
+      "olcum": 1,
       "sonuc": "dns"
      }
     },
@@ -13678,6 +13698,11 @@
       "kesin": true,
       "olcum": 25,
       "sonuc": "dns"
+     },
+     "Türksat Kablo": {
+      "kesin": true,
+      "olcum": 1,
+      "sonuc": "dns"
      }
     },
     "sonuc": "dns"
@@ -14284,11 +14309,11 @@
    "son": {
     "operatorler": {
      "Superonline": {
-      "olcum": 4,
+      "olcum": 6,
       "sonuc": "acik"
      },
      "TurkNet": {
-      "olcum": 6,
+      "olcum": 7,
       "sonuc": "acik"
      },
      "Türk Telekom": {
@@ -14506,7 +14531,7 @@
       "sonuc": "dns"
      },
      "Türk Telekom": {
-      "olcum": 11,
+      "olcum": 12,
       "sonuc": "acik"
      }
     },
@@ -14870,7 +14895,7 @@
       "sonuc": "acik"
      },
      "Türk Telekom": {
-      "olcum": 11,
+      "olcum": 12,
       "sonuc": "ip_engeli"
      }
     },
@@ -15071,19 +15096,19 @@
       "sonuc": "acik"
      },
      "Superonline": {
-      "olcum": 216,
+      "olcum": 218,
       "sonuc": "acik"
      },
      "TurkNet": {
-      "olcum": 294,
+      "olcum": 299,
       "sonuc": "acik"
      },
      "Turkcell": {
-      "olcum": 27,
+      "olcum": 29,
       "sonuc": "baglanti_kesildi"
      },
      "Türk Telekom": {
-      "olcum": 416,
+      "olcum": 423,
       "sonuc": "acik"
      },
      "Türk Telekom Mobil": {
@@ -15091,7 +15116,7 @@
       "sonuc": "acik"
      },
      "Türksat Kablo": {
-      "olcum": 19,
+      "olcum": 20,
       "sonuc": "acik"
      }
     },
@@ -16264,7 +16289,7 @@
      },
      "Türk Telekom": {
       "kesin": true,
-      "olcum": 29,
+      "olcum": 31,
       "sonuc": "dns"
      },
      "Türksat Kablo": {
@@ -16310,11 +16335,11 @@
     "operatorler": {
      "Superonline": {
       "kesin": true,
-      "olcum": 4,
+      "olcum": 5,
       "sonuc": "dns"
      },
      "TurkNet": {
-      "olcum": 6,
+      "olcum": 7,
       "sonuc": "acik"
      },
      "Türk Telekom": {
@@ -17241,9 +17266,14 @@
       "olcum": 6,
       "sonuc": "acik"
      },
+     "Turkcell": {
+      "kesin": true,
+      "olcum": 1,
+      "sonuc": "dns"
+     },
      "Türk Telekom": {
       "kesin": true,
-      "olcum": 11,
+      "olcum": 12,
       "sonuc": "dns"
      },
      "Türksat Kablo": {
@@ -17382,11 +17412,11 @@
     "operatorler": {
      "Superonline": {
       "kesin": true,
-      "olcum": 4,
+      "olcum": 5,
       "sonuc": "dns"
      },
      "TurkNet": {
-      "olcum": 6,
+      "olcum": 7,
       "sonuc": "acik"
      },
      "Türk Telekom": {
@@ -17474,11 +17504,11 @@
     "operatorler": {
      "Superonline": {
       "kesin": true,
-      "olcum": 4,
+      "olcum": 5,
       "sonuc": "dns"
      },
      "TurkNet": {
-      "olcum": 6,
+      "olcum": 7,
       "sonuc": "acik"
      },
      "Türk Telekom": {
@@ -18409,9 +18439,14 @@
       "olcum": 6,
       "sonuc": "acik"
      },
+     "Turkcell": {
+      "kesin": true,
+      "olcum": 1,
+      "sonuc": "dns"
+     },
      "Türk Telekom": {
       "kesin": true,
-      "olcum": 11,
+      "olcum": 12,
       "sonuc": "dns"
      },
      "Türksat Kablo": {
@@ -19414,7 +19449,7 @@
       "sonuc": "acik"
      },
      "Türk Telekom": {
-      "olcum": 11,
+      "olcum": 12,
       "sonuc": "dns"
      }
     },
@@ -19668,7 +19703,7 @@
      },
      "Türk Telekom": {
       "kesin": true,
-      "olcum": 11,
+      "olcum": 12,
       "sonuc": "engelli"
      }
     },
@@ -20747,10 +20782,15 @@
       "olcum": 6,
       "sonuc": "acik"
      },
+     "Turkcell": {
+      "kesin": true,
+      "olcum": 1,
+      "sonuc": "dns"
+     },
      "Türk Telekom": {
       "kesin": true,
-      "olcum": 9,
-      "sonuc": "baglanti_kesildi"
+      "olcum": 10,
+      "sonuc": "dns"
      },
      "Türksat Kablo": {
       "kesin": true,
@@ -20758,7 +20798,7 @@
       "sonuc": "dns"
      }
     },
-    "sonuc": "baglanti_kesildi"
+    "sonuc": "dns"
    },
    "son_olcum": "2026-11-17"
   },
@@ -21308,7 +21348,7 @@
       "sonuc": "acik"
      },
      "Türk Telekom": {
-      "olcum": 11,
+      "olcum": 12,
       "sonuc": "ip_engeli"
      }
     },
@@ -23184,7 +23224,7 @@
      },
      "Türk Telekom": {
       "kesin": true,
-      "olcum": 13,
+      "olcum": 14,
       "sonuc": "dns"
      },
      "Türksat Kablo": {
@@ -23527,7 +23567,7 @@
       "sonuc": "acik"
      },
      "Türk Telekom": {
-      "olcum": 14,
+      "olcum": 15,
       "sonuc": "dns"
      }
     },
@@ -25911,7 +25951,7 @@
       "sonuc": "dns"
      },
      "TurkNet": {
-      "olcum": 5,
+      "olcum": 6,
       "sonuc": "acik"
      },
      "Türk Telekom": {
@@ -26076,7 +26116,7 @@
       "sonuc": "dns"
      },
      "TurkNet": {
-      "olcum": 5,
+      "olcum": 6,
       "sonuc": "acik"
      },
      "Türk Telekom": {
@@ -26804,8 +26844,8 @@
       "sonuc": "acik"
      },
      "TurkNet": {
-      "olcum": 5,
-      "sonuc": "acik"
+      "olcum": 6,
+      "sonuc": "dns"
      },
      "Türk Telekom": {
       "olcum": 11,
@@ -26944,7 +26984,7 @@
       "sonuc": "acik"
      },
      "TurkNet": {
-      "olcum": 5,
+      "olcum": 6,
       "sonuc": "ip_engeli"
      },
      "Türk Telekom": {
@@ -27309,6 +27349,10 @@
       "olcum": 11,
       "sonuc": "dns"
      },
+     "TurkNet": {
+      "olcum": 13,
+      "sonuc": "acik"
+     },
      "Türk Telekom": {
       "kesin": true,
       "olcum": 26,
@@ -27408,7 +27452,7 @@
      },
      "TurkNet": {
       "kesin": true,
-      "olcum": 5,
+      "olcum": 6,
       "sonuc": "baglanti_kesildi"
      },
      "Türk Telekom": {
@@ -27444,7 +27488,7 @@
       "sonuc": "dns"
      },
      "TurkNet": {
-      "olcum": 11,
+      "olcum": 13,
       "sonuc": "acik"
      },
      "Türk Telekom": {
@@ -28771,9 +28815,14 @@
       "olcum": 5,
       "sonuc": "acik"
      },
+     "Turkcell": {
+      "kesin": true,
+      "olcum": 1,
+      "sonuc": "dns"
+     },
      "Türk Telekom": {
       "kesin": true,
-      "olcum": 10,
+      "olcum": 11,
       "sonuc": "dns"
      }
     },
@@ -28952,7 +29001,7 @@
       "sonuc": "dns"
      },
      "Türk Telekom": {
-      "olcum": 15,
+      "olcum": 17,
       "sonuc": "dns"
      }
     },
@@ -29763,9 +29812,14 @@
       "olcum": 6,
       "sonuc": "acik"
      },
+     "Turkcell": {
+      "kesin": true,
+      "olcum": 1,
+      "sonuc": "dns"
+     },
      "Türk Telekom": {
       "kesin": true,
-      "olcum": 9,
+      "olcum": 10,
       "sonuc": "dns"
      }
     },
@@ -30368,7 +30422,7 @@
      },
      "Türk Telekom": {
       "kesin": true,
-      "olcum": 30,
+      "olcum": 34,
       "sonuc": "engelli"
      }
     },
@@ -30396,7 +30450,7 @@
       "sonuc": "ip_engeli"
      },
      "Türk Telekom": {
-      "olcum": 15,
+      "olcum": 17,
       "sonuc": "acik"
      }
     },
@@ -30534,7 +30588,7 @@
       "sonuc": "dns"
      },
      "TurkNet": {
-      "olcum": 11,
+      "olcum": 12,
       "sonuc": "acik"
      },
      "Türk Telekom": {
@@ -30683,7 +30737,7 @@
       "sonuc": "acik"
      },
      "TurkNet": {
-      "olcum": 6,
+      "olcum": 7,
       "sonuc": "ip_engeli"
      },
      "Türk Telekom": {
@@ -30895,7 +30949,7 @@
      },
      "TurkNet": {
       "kesin": true,
-      "olcum": 12,
+      "olcum": 13,
       "sonuc": "dns"
      },
      "Türk Telekom": {
@@ -31160,7 +31214,7 @@
       "sonuc": "dns"
      },
      "TurkNet": {
-      "olcum": 12,
+      "olcum": 13,
       "sonuc": "dns"
      },
      "Türk Telekom": {
@@ -31316,7 +31370,7 @@
      },
      "TurkNet": {
       "kesin": true,
-      "olcum": 5,
+      "olcum": 6,
       "sonuc": "dns"
      },
      "Türk Telekom": {
@@ -31396,7 +31450,7 @@
       "sonuc": "acik"
      },
      "Türk Telekom": {
-      "olcum": 15,
+      "olcum": 17,
       "sonuc": "dns"
      }
     },
@@ -31980,7 +32034,7 @@
       "sonuc": "baglanti_kesildi"
      },
      "TurkNet": {
-      "olcum": 11,
+      "olcum": 12,
       "sonuc": "acik"
      },
      "Türk Telekom": {
@@ -33184,7 +33238,7 @@
       "sonuc": "acik"
      },
      "TurkNet": {
-      "olcum": 10,
+      "olcum": 11,
       "sonuc": "engelli"
      },
      "Türk Telekom": {
@@ -33282,7 +33336,7 @@
       "sonuc": "baglanti_kesildi"
      },
      "TurkNet": {
-      "olcum": 10,
+      "olcum": 11,
       "sonuc": "acik"
      },
      "Türk Telekom": {
@@ -33312,7 +33366,7 @@
      },
      "TurkNet": {
       "kesin": true,
-      "olcum": 10,
+      "olcum": 11,
       "sonuc": "dns"
      },
      "Türk Telekom": {
@@ -33749,7 +33803,7 @@
      },
      "TurkNet": {
       "kesin": true,
-      "olcum": 10,
+      "olcum": 11,
       "sonuc": "dns"
      },
      "Turkcell": {
@@ -34079,7 +34133,7 @@
       "sonuc": "acik"
      },
      "Türk Telekom": {
-      "olcum": 15,
+      "olcum": 16,
       "sonuc": "ip_engeli"
      }
     },
@@ -34172,7 +34226,7 @@
       "sonuc": "ip_engeli"
      },
      "TurkNet": {
-      "olcum": 10,
+      "olcum": 11,
       "sonuc": "ip_engeli"
      },
      "Turkcell": {
@@ -34277,7 +34331,7 @@
      },
      "TurkNet": {
       "kesin": true,
-      "olcum": 10,
+      "olcum": 11,
       "sonuc": "dns"
      },
      "Turkcell": {
@@ -34328,7 +34382,7 @@
      },
      "TurkNet": {
       "kesin": true,
-      "olcum": 10,
+      "olcum": 11,
       "sonuc": "dns"
      },
      "Turkcell": {
@@ -34544,7 +34598,7 @@
       "sonuc": "baglanti_kesildi"
      },
      "TurkNet": {
-      "olcum": 10,
+      "olcum": 11,
       "sonuc": "acik"
      },
      "Türk Telekom": {
@@ -34585,5 +34639,5 @@
    "son_olcum": "2026-11-17"
   }
  },
- "son_olcum": "2026-11-17T21:57:04+00:00"
+ "son_olcum": "2026-11-18T07:26:33+00:00"
 }
