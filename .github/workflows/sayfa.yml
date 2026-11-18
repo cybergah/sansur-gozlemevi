@@ -4,7 +4,10 @@ name: Sayfa
 
 on:
   schedule:
+    # GitHub zamanlanmış işleri geciktirebilir ya da atlayabilir; ikinci saat yedektir.
+    # Aynı gün iki kez işlenirse sonuç değişmez.
     - cron: "30 4 * * *"
+    - cron: "17 13 * * *"
   push:
     branches: [main]
   workflow_dispatch:
