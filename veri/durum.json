@@ -33,7 +33,7 @@
   },
   "Türksat Kablo": {
    "engelli": 117,
-   "olcum": 2325,
+   "olcum": 2333,
    "site": 229
   },
   "Vodafone": {
@@ -15292,7 +15292,7 @@
       "sonuc": "acik"
      },
      "Türksat Kablo": {
-      "olcum": 21,
+      "olcum": 22,
       "sonuc": "acik"
      }
     },
@@ -34844,5 +34844,5 @@
    "son_olcum": "2026-11-18"
   }
  },
- "son_olcum": "2026-11-19T13:38:48+00:00"
+ "son_olcum": "2026-11-19T21:39:54+00:00"
 }
