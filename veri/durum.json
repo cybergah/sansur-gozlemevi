@@ -23,7 +23,7 @@
   },
   "Türk Telekom": {
    "engelli": 229,
-   "olcum": 53614,
+   "olcum": 53636,
    "site": 2069
   },
   "Türk Telekom Mobil": {
@@ -28658,7 +28658,7 @@
      },
      "Türk Telekom": {
       "kesin": true,
-      "olcum": 22,
+      "olcum": 23,
       "sonuc": "dns"
      },
      "Türksat Kablo": {
@@ -28959,7 +28959,7 @@
      },
      "Türk Telekom": {
       "kesin": true,
-      "olcum": 23,
+      "olcum": 24,
       "sonuc": "dns"
      },
      "Türksat Kablo": {
@@ -29369,7 +29369,7 @@
       "sonuc": "acik"
      },
      "Türk Telekom": {
-      "olcum": 22,
+      "olcum": 23,
       "sonuc": "baglanti_kesildi"
      }
     },
@@ -34960,5 +34960,5 @@
    "son_olcum": "2026-11-20"
   }
  },
- "son_olcum": "2026-11-21T12:53:46+00:00"
+ "son_olcum": "2026-11-21T20:09:53+00:00"
 }
