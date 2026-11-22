@@ -26,7 +26,7 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: github-pages
-      url: ${{ steps.deploy.outputs.page_url }}
+      url: ${{ steps.deploy.outputs.page_url || steps.deploy2.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
 
@@ -54,6 +54,8 @@ jobs:
           git add veri/durum.json veri/gunluk
           if ! git diff --cached --quiet; then
             git commit -q -m "Veri $(date -u +%F) (OONI)"
+            # Yeniden çalıştırmada dal ilerlemiş olabilir: önce üstüne al.
+            git pull -q --rebase
             git push -q
           fi
 
@@ -69,5 +71,15 @@ jobs:
         with:
           path: site
 
+      # GitHub Pages ara sıra "Fetching artifact metadata failed" diyor; bir dakika sonra bir kez daha denenir.
       - id: deploy
+        continue-on-error: true
+        uses: actions/deploy-pages@v4
+
+      - name: Yayın takıldı, bir dakika bekle
+        if: steps.deploy.outcome == 'failure'
+        run: sleep 60
+
+      - id: deploy2
+        if: steps.deploy.outcome == 'failure'
         uses: actions/deploy-pages@v4
