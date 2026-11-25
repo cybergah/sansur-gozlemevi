@@ -23,7 +23,7 @@
   },
   "Türk Telekom": {
    "engelli": 226,
-   "olcum": 57323,
+   "olcum": 57328,
    "site": 2061
   },
   "Türk Telekom Mobil": {
@@ -1368,7 +1368,7 @@
       "sonuc": "acik"
      },
      "Türk Telekom": {
-      "olcum": 21,
+      "olcum": 22,
       "sonuc": "acik"
      }
     },
@@ -8208,7 +8208,7 @@
       "sonuc": "dns"
      },
      "Türk Telekom": {
-      "olcum": 27,
+      "olcum": 28,
       "sonuc": "dns"
      }
     },
@@ -34901,5 +34901,5 @@
    "son_olcum": "2026-11-24"
   }
  },
- "son_olcum": "2026-11-25T14:42:15+00:00"
+ "son_olcum": "2026-11-25T22:37:09+00:00"
 }
